@@ -7,13 +7,13 @@ maxiteration = 30
 xCoord = range(imagesize)
 yCoord = range(imagesize)
 zoom = 1.1
-offsetx= 7500
-offsety= 5000
-# define used colorsi
+offsetx= 750
+offsety= 500
+# define used colors
 GREEN = [(0,0,0),(51,102,51),(51,102,77),(51,102,102),(51,77,102),(51,51,102),(77,51,102),(102,51,102),(102,51,77),(102,51,51),(102,77,51),(102,102,51),(77,102,51)]
-RED = [(255,0,0),(255,128,0),(255,255,0),(128,255,0),(0,255,0),(0,255,128),(0,255,255),(0,128,255),(0,0,255),(128,0,255),(255,0,255),(255,0,128)]
+RED = [(0,0,0),(255,0,0),(255,128,0),(255,255,0),(128,255,0),(0,255,0),(0,255,128),(0,255,255),(0,128,255),(0,0,255),(128,0,255),(255,0,255),(255,0,128)]
 
-# create new image filei
+# create new image file
 iteration =0
 image = Image.new("RGB", (imagesize,imagesize))
 draw = ImageDraw.Draw(image)
