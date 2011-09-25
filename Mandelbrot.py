@@ -2,8 +2,8 @@ import Image, ImageDraw
 
 
 # define image size
-imagesize = 10000
-maxiteration = 100
+imagesize = 1000
+maxiteration = 30
 xCoord = range(imagesize)
 yCoord = range(imagesize)
 zoom = 1.1
@@ -11,7 +11,7 @@ offsetx= 7500
 offsety= 5000
 # define used colorsi
 GREEN = [(0,0,0),(51,102,51),(51,102,77),(51,102,102),(51,77,102),(51,51,102),(77,51,102),(102,51,102),(102,51,77),(102,51,51),(102,77,51),(102,102,51),(77,102,51)]
-
+RED = [(255,0,0),(255,128,0),(255,255,0),(128,255,0),(0,255,0),(0,255,128),(0,255,255),(0,128,255),(0,0,255),(128,0,255),(255,0,255),(255,0,128)]
 
 # create new image filei
 iteration =0
