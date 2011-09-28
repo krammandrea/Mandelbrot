@@ -1,4 +1,5 @@
-
+import string
+import re
 import BaseHTTPServer
 
 
@@ -48,13 +49,13 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	pngfile.close()
 
     #handles http://localhost:8080/?x=658&y=586 requests
-    def do_GET_new_coordinate():
+    def do_GET_new_coordinate(self):
 	#extract new coordinates
 	    # find the block of numbers after 'x=' and 'y='
 	regExp = re.compile(r"x=([0-9]+)")
-	new_x= atoi(regExp.findall(self.path()))
+	new_x= string.atoi(regExp.findall(self.path))
 	regExp = re.compile(r"y=([0-9]+)")
-        new_y = atoi(regExp.findall(self.path())) 
+        new_y = string.atoi(regExp.findall(self.path)) 
 	self.end_headers()
 	#TODO calculate_mandelbrot()	
 	self.do_GET_main_page()
