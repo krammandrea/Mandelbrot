@@ -29,18 +29,9 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-type", "text/html")
         self.end_headers()
-	self.show_main_page()
-
-    def show_main_page(self):
-	self.wfile.write("<html><head><title>Mandelbrot</title></head>")
-        self.wfile.write("<body><p>This is a test.</p>")
-        #self.wfile.write("<img src='Mandelbrot.png'>")
-        self.wfile.write("<form action='/' method=get><input type=image src='/Mandelbrot.png' alt='click for zoom' border=0></form>")
-	# If someone went to "http://something.somewhere.net/foo/bar/",
-        # then s.path equals "/foo/bar/".
-        #self.wfile.write("<p>You accessed path: %s</p>" % self.path)
-        self.wfile.write("</body></html>")
-        print self.path
+	
+	main_page_html = open("Mandelbrotserver.html","r")
+	self.wfile.write(main_page_html.read())
 
 
 
