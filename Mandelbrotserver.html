@@ -8,17 +8,12 @@
     <!--<p>This is a test.</p>-->
 
     
-    <input  type="range"
-	    min="0"
-	    max="100"
-	    value="100"
-	    step="20"/>
-
+<!--Mandelbrot image and corresponding offset arrows-->
     <div    id="der_nagel"
             style="position: absolute; left:0px; top:0px; width:0px; height:0px">
 
 
- <div    id="layer_image"
+    <div    id="layer_image"
             style="position: absolute; left:0px; top:0px">
     <form   action="/zoom_offset" 
             method="get">
@@ -30,9 +25,11 @@
                 border="0">
     </form>
     </div>
+    
+
     <div    id="layer_circle"
             style="position: absolute; left:4px; top:4px; width:72px; height:72px">
- <img
+    <img
     
         type="image"
         title="circle"
@@ -75,9 +72,11 @@
             >
     </form>
     </div>
+    
+
     <div    id="layer_down"
             style="position: absolute; left:24px; top:44px; width:32px; height:32px">
- <form   action ="/offset_down"
+    <form   action ="/offset_down"
             method =get>
             <input
                 type="image"
@@ -90,10 +89,10 @@
             >
     </form>
     </div>
-    <div    id="layer_up"
-            style="position: absolute; left:24px; top:4px; width:32px; height:32px">
- <form   action ="/offset_up"
-            method =get>
+	<div    id="layer_up"
+		style="position: absolute; left:24px; top:4px; width:32px; height:32px">
+	<form   action ="/offset_up"
+		method =get>
             <input
                 type="image"
                 title="move up"
@@ -103,11 +102,34 @@
                 src="/MandelbrotImg/arrow_up.png"
                 border="0"          
             >
-    </form>
+	</form>
+    </div>
+
+    <!--slider and zoombuttons-->
+    <div    style="position:absolute; left:-26px; top:160px">
+	<input  type="range"
+	        min="0"
+		max="100"
+		value="0"
+		step="20"
+		style="-webkit-transform:rotate(-90deg); -moz-transform:rotate(-90deg)"/>
+    </div>
+    <div>
+	<button onClick="window.open("Mandelbrotserver.html")"
+	    style="width:25;height:20;position:absolute;left:26px;top:90px">
+	+
+	</button>
+    </div>
+    <div>
+	<button onClick="window.open("Mandelbrotserver.html")"            
+		style="width:25;height:20;position:absolute;left:26px;top:230px">
+	-
+	</button>
     </div>
 
     </div>
 
+    <!--save button-->
     <button onClick="window.open('Mandelbrotserver.html')"  
 	    style="width:100;height:50">
 	Save
