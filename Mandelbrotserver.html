@@ -1,16 +1,117 @@
+<!--main page for Mandelbrotserver-->
+<!--any text containing $ destined for the use as template in python with string.Template-->
 <html>
 <head>
     <title>Mandelbrot</title>
 </head>
 <body>
     <!--<p>This is a test.</p>-->
-    <img src='Mandelbrot.png'>
-    <form   action='/' 
-	    method=get><input 
-	    type=image 
-	    src='/Mandelbrot.png' 
-	    title='click for zoom' 
-	    alt='Mandelbrot' 
-	    border=0></form>
+
+    
+    <input  type="range"
+	    min="0"
+	    max="100"
+	    value="100"
+	    step="20"/>
+
+    <div    id="der_nagel"
+            style="position: absolute; left:0px; top:0px; width:0px; height:0px">
+
+
+ <div    id="layer_image"
+            style="position: absolute; left:0px; top:0px">
+    <form   action="/zoom_offset" 
+            method="get">
+            <input 
+                type="image" 
+                src='/MandelbrotImg/Mandelbrot.png' 
+                title='click for zoom' 
+                alt='Mandelbrot' 
+                border="0">
+    </form>
+    </div>
+    <div    id="layer_circle"
+            style="position: absolute; left:4px; top:4px; width:72px; height:72px">
+ <img
+    
+        type="image"
+        title="circle"
+        alt="circle"
+        width="72"
+        height="72"         
+                src="/MandelbrotImg/circle.png"
+                border="0"          
+            >
+    </div>
+
+
+    <div    id="layer_right"
+	    style="position: absolute; left:44px; top:24px; width:32px; height:32px">	   
+    <form   action ="/offset_right"
+	    method =get>
+	    <input
+		type="image"
+		title="move right"
+		alt="move graphic to the right"
+		width="32"
+		height="32"	    
+		src="/MandelbrotImg/arrow_right.png"
+		border="0"	    
+	    >
+    </form>
+    </div>
+        <div    id="layer_left"
+            style="position: absolute; left:4px; top:24px; width:32px; height:32px">
+     <form  action ="/offset_left"
+	    method =get>
+            <input
+                type="image"
+                title="move left"
+                alt="move graphic to the left"
+                width="32"
+                height="32"         
+                src="/MandelbrotImg/arrow_left.png"
+                border="0"          
+            >
+    </form>
+    </div>
+    <div    id="layer_down"
+            style="position: absolute; left:24px; top:44px; width:32px; height:32px">
+ <form   action ="/offset_down"
+            method =get>
+            <input
+                type="image"
+                title="move down"
+                alt="move graphic down"
+                width="32"
+                height="32"         
+                src="/MandelbrotImg/arrow_down.png"
+                border="0"          
+            >
+    </form>
+    </div>
+    <div    id="layer_up"
+            style="position: absolute; left:24px; top:4px; width:32px; height:32px">
+ <form   action ="/offset_up"
+            method =get>
+            <input
+                type="image"
+                title="move up"
+                alt="move graphic up"
+                width="32"
+                height="32"         
+                src="/MandelbrotImg/arrow_up.png"
+                border="0"          
+            >
+    </form>
+    </div>
+
+    </div>
+
+    <button onClick="window.open('Mandelbrotserver.html')"  
+	    style="width:100;height:50">
+	Save
+    </button>
 </body>
 </html>
+<!--TODO: if style="" getting to big, put in .css style sheets-->
