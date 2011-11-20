@@ -17,20 +17,13 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	    self.do_GET_main_page()
 	elif self.path.endswith("/"):
 	    self.do_GET_main_page()
-	elif self.path.endswith("Mandelbrot.png"):
-	    self.do_GET_Mandelbrot_png()
-	elif self.path.endswith("arrow_right.png"):
-	    self.do_GET_arrow_right_png()
-	elif self.path.endswith("arrow_left.png"):
-            self.do_GET_arrow_left_png()
-	elif self.path.endswith("arrow_up.png"):
-            self.do_GET_arrow_up_png()
-	elif self.path.endswith("arrow_down.png"):
-            self.do_GET_arrow_down_png()
-	elif self.path.endswith("circle.png"):
-            self.do_GET_circle_png()
 	elif '?x'in self.path:
 	    self.do_GET_new_coordinate()
+	elif self.path.find("/MandelbrotImg/") >=0:
+	    #extract the name of the requested picture
+	    #do_GET_image("Imagename")
+	    self.do_GET_image(self.path.rpartition("MandelbrotImg/")[-1])
+	    
 	else:
 	    self.send_response(404)
 #TODO self.send_header("Content-type","application/x-download")
@@ -46,61 +39,19 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	main_page_html = open("Mandelbrotserver.html","r")
 	self.wfile.write(main_page_html.read())
 
+    def do_GET_image(self,imagename):
+	
+	if imagename.endswith(".png"):
+	    self.send_response(200)
+	    self.send_header("Content-type","image/png")
+	    self.end_headers()	
+	    pngfile = open("MandelbrotImg/"+imagename,"rb")
+	    self.wfile.write(pngfile.read())
+	    pngfile.close()
+	#elif: expand to other imagedatatypes if necessary here
+	else:
+	    self.send_response(404)
 
-
-    def do_GET_Mandelbrot_png(self):
-
-	self.send_response(200)
-	self.send_header("Content-type","image/png")
-	self.end_headers()	
-	pngfile = open("MandelbrotImg/Mandelbrot.png","rb")
-	self.wfile.write(pngfile.read())
-	pngfile.close()
-
-    def do_GET_arrow_right_png(self):
-
-        self.send_response(200)
-        self.send_header("Content-type","image/png")
-        self.end_headers()      
-        pngfile = open("MandelbrotImg/arrow_right.png","rb")
-        self.wfile.write(pngfile.read())
-        pngfile.close()
-
-    def do_GET_arrow_left_png(self):
-
-        self.send_response(200)
-        self.send_header("Content-type","image/png")
-        self.end_headers()      
-        pngfile = open("MandelbrotImg/arrow_left.png","rb")
-        self.wfile.write(pngfile.read())
-        pngfile.close()
-
-    def do_GET_arrow_up_png(self):
-
-        self.send_response(200)
-        self.send_header("Content-type","image/png")
-        self.end_headers()      
-        pngfile = open("MandelbrotImg/arrow_up.png","rb")
-        self.wfile.write(pngfile.read())
-        pngfile.close()
-
-    def do_GET_arrow_down_png(self):
-
-        self.send_response(200)
-        self.send_header("Content-type","image/png")
-        self.end_headers()      
-        pngfile = open("MandelbrotImg/arrow_down.png","rb")
-        self.wfile.write(pngfile.read())
-        pngfile.close()
-
-    def do_GET_circle_png(self):
-
-        self.send_response(200)
-        self.send_header("Content-type","image/png")
-        self.end_headers()      
-        pngfile = open("MandelbrotImg/circle.png","rb")
-        self.wfile.write(pngfile.read())
-        pngfile.close()
     #handles http://localhost:8080/?x=658&y=586 requests
     def do_GET_new_coordinate(self):
 	#extract new coordinates
