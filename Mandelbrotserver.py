@@ -1,7 +1,7 @@
 import string
 import re
 import BaseHTTPServer
-
+import Mandelbrot
 
 HOST_NAME = '' # empty because using http://localhost
 PORT_NUMBER = 8080
@@ -17,8 +17,10 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	    self.do_GET_main_page()
 	elif self.path.endswith("/"):
 	    self.do_GET_main_page()
+	#TODO only if ?x AND zoom_offset
 	elif '?x'in self.path:
 	    self.do_GET_new_coordinate()
+	#TODO /zoom_in /zoom_out and /zoom
 	elif self.path.find("/MandelbrotImg/") >=0:
 	    #extract the name of the requested picture
 	    #do_GET_image("Imagename")
@@ -53,6 +55,8 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	    self.send_response(404)
 
     #handles http://localhost:8080/?x=658&y=586 requests
+    #TODO should handle http://localhost:8080/zoom_offset?x=658&y=586 requests
+
     def do_GET_new_coordinate(self):
 	#extract new coordinates
 	    # find the block of numbers after 'x=' and 'y='
@@ -60,10 +64,13 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	new_x= string.atoi(regExp.findall(self.path)[0])
 	regExp = re.compile(r"y=([0-9]+)")
         new_y = string.atoi(regExp.findall(self.path)[0]) 
-	self.end_headers()
-	#TODO calculate_mandelbrot()	
-	self.show_main_page()   
+	#calculate absolute zoomfactor and offset from all the relative factors in the recent browsing history
+	Mandelbrot.calculate_mandelbrot()	
+	
+	self.do_GET_main_page()   
  
+	
+	
 if __name__ == '__main__':
     server_class = BaseHTTPServer.HTTPServer
     httpd = server_class((HOST_NAME, PORT_NUMBER), MyHandler)
