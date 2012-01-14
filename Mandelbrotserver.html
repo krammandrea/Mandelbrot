@@ -8,7 +8,7 @@
     <!--<p>This is a test.</p>-->
 
     
-<!--Mandelbrot image and corresponding offset arrows-->
+<!-- Mandelbrot image and corresponding offset arrows-->
     <div    id="der_nagel"
             style="position: absolute; left:0px; top:0px; width:0px; height:0px">
 
@@ -106,22 +106,30 @@
     </div>
 
     <!--slider and zoombuttons-->
+<!--sTODO email einfuegens-->
+
+<!--sTODO display current zoomfactors-->
+
     <div    style="position:absolute; left:-26px; top:160px">
-	<input  type="range"
-	        min="0"
-		max="100"
-		value="0"
-		step="20"
-		style="-webkit-transform:rotate(-90deg); -moz-transform:rotate(-90deg)"/>
+	<form	action ="/zoom"
+		method = get>
+		<input   type="range"
+		        min="0"
+	        	max="100"
+			value="0"
+			step="20"
+			style="-webkit-transform:rotate(-90deg); -moz-transform:rotate(-90deg)"
+			onMouseUp="window.location='/zoom'"/>
+	</form>
     </div>
     <div>
-	<button onClick="window.open("Mandelbrotserver.html")"
+	<button onClick="window.location='/zoom_in'"
 	    style="width:25;height:20;position:absolute;left:26px;top:90px">
 	+
 	</button>
     </div>
     <div>
-	<button onClick="window.open("Mandelbrotserver.html")"            
+	<button onClick="window.location='/zoom_out'"            
 		style="width:25;height:20;position:absolute;left:26px;top:230px">
 	-
 	</button>
@@ -130,10 +138,18 @@
     </div>
 
     <!--save button-->
+ <!--TODO save picture as
+#TODO save imagedata(offset, zoomfactor ..)s-->
+
     <button onClick="window.open('Mandelbrotserver.html')"  
 	    style="width:100;height:50">
 	Save
     </button>
+ <!--TODO Imagesize input field
+#TODO Iteration input field
+#TODO Colors input fields-->
+
 </body>
 </html>
+
 <!--TODO: if style="" getting to big, put in .css style sheets-->
