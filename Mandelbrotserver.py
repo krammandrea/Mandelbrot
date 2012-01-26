@@ -1,3 +1,5 @@
+"""Interprets the user clicks on the website and relates the parameter to the Mandelbrot calculating class
+"""
 import string
 import re
 import BaseHTTPServer
@@ -6,44 +8,60 @@ import Mandelbrot
 HOST_NAME = '' # empty because using http://localhost
 PORT_NUMBER = 8080
 
+#TODO: put class in new file, find name, find the big picture, comment pydoc, comment variables, is it a module?
 class ImageAdministrator():
-    def __init__(self):
-	self.height = 1000
-	self.width = 1000
-	self.maxiteration = 10
-	self.offsetx = self.height/2
-	self.offsety = self.width/2
-	self.zoomfactor = 1
-	self.colorscheme = [(0,0,0),(51,102,51),(51,102,77),(51,102,102),(51,77,102),(51,51,102),(77,51,102),(102,51,102),(102,51,77),(102,51,51),(102,77,51),(102,102,51),(77,102,51)] #GREEN
+    """stores the current parameters of the image which the user changes until he is satisfied and saves the image and the accompaning calculating data to file""" 
+    GREEN= [(0,0,0),(51,102,51),(51,102,77),(51,102,102),(51,77,102),(51,51,102),(77,51,102),(102,51,102),(102,51,77),(102,51,51),(102,77,51),(102,102,51),(77,102,51)]
+    #"""default colorscheme in green"""
 
+    def __init__(self):
+	self.height = 400
+	self.width = 400
+	self.maxiteration = 10
+	self.offset_x = self.height/2
+	self.offset_y = self.width/2
+	self.zoom_absolute = 1
+	self.colorscheme = self.GREEN	
+	
     def reset_to_default(self):
 	pass
-    def change_offset_and_zoom(self, new_x, new_y):
-	self.offsetx 
-    def change_zoom(self):
+    def change_zoom_absolute(self,zoom_relative):
 	pass
-    def change_offset(self):
+    def change_offset(self, new_center_x, new_center_y):
+	self.offset_x = new_center_x
+	self.offset_y = new_center_y
 	pass
     def change_colorscheme(self):
 	pass
     def change_maxiteration(self):
 	pass
     def get_parameters(self):
-	return self.height, self.width, self.maxiteration, self.offsetx, self.offsety, self.zoomfactor, self.colorscheme
+	return self.height, self.width, self.maxiteration, self.offset_x, self.offset_y, self.zoom_absolute, self.colorscheme
     def save_parameters_to_file(self):
 	pass
+#TODO rename file, restructre if/else part and add comments what the user actions are 
 class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+    ZOOM_ON_CLICK= 2
+    
+    def __init__(self,request, client_adress,server):
+	self.imageAdministrator = ImageAdministrator()
+	BaseHTTPServer.BaseHTTPRequestHandler.__init__(self,request,client_adress,server)
+
+	#"""standard zoom when clicking into the image"""
     def do_GET(self):
 	if self.path.endswith("index.html"):
+	    Mandelbrot.calculate_mandelbrot()
 	    self.do_GET_main_page()
 	elif self.path.endswith("/"):
+	    Mandelbrot.calculate_mandelbrot()
 	    self.get_main_page()
 	#TODO only if ?x AND zoom_offset
 	elif '?x'in self.path:
+	    """when clicking into the image the new image will be calculated centered around the clicked point"""
 	    new_x,new_y = self.get_new_coordinate()
-
+	    self.imageAdministrator.change_offset(new_x,new_y)
 	    #calculate absolute zoomfactor and offset from all the relative factors in the recent browsing history
-	    Mandelbrot.calculate_mandelbrot()	
+	    Mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())	
 	    #imageheight,imagewidth: pixelsize of the image
             #maxiteration: directly correlated to the duration of the calculation ?when does it get too long
             #offsetx, offsety: new center of the reference image
@@ -67,8 +85,9 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	main_page_html = open("Mandelbrotserver.html","r")
 	self.wfile.write(main_page_html.read())
 
+#TODO else only after imagename not existent 
     def get_image(self,imagename):
-	
+    #responds to a request for an image by checking for the file in folder /MandelbrotImg	
 	if imagename.endswith(".png"):
 	    self.send_response(200)
 	    self.send_header("Content-type","image/png")
@@ -84,8 +103,8 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     #TODO should handle http://localhost:8080/zoom_offset?x=658&y=586 requests
 
     def get_new_coordinate(self):
-	#extract new coordinates
-	    # find the block of numbers after 'x=' and 'y='
+    #extract new center of image after the user click out of the url
+	# find the block of numbers after 'x=' and 'y='
 	regExp = re.compile(r"x=([0-9]+)")
 	new_x= string.atoi(regExp.findall(self.path)[0])
 	regExp = re.compile(r"y=([0-9]+)")
