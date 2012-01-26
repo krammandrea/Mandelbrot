@@ -51,7 +51,7 @@ def calculate_mandelbrot(imageheight=400,
     	   draw.point((x,y),fill=assignedcolor)
     
     # save picture
-    image.save("MandelbrotImg/Mandelbrot.png","PNG")
+    image.save("images/Mandelbrot.png","PNG")
     
     # show picture
     # image.show()

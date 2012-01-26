@@ -3,7 +3,7 @@
 import string
 import re
 import BaseHTTPServer
-import Mandelbrot
+import mandelbrot
 
 HOST_NAME = '' # empty because using http://localhost
 PORT_NUMBER = 8080
@@ -50,10 +50,10 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	#"""standard zoom when clicking into the image"""
     def do_GET(self):
 	if self.path.endswith("index.html"):
-	    Mandelbrot.calculate_mandelbrot()
+	    mandelbrot.calculate_mandelbrot()
 	    self.do_GET_main_page()
 	elif self.path.endswith("/"):
-	    Mandelbrot.calculate_mandelbrot()
+	    mandelbrot.calculate_mandelbrot()
 	    self.get_main_page()
 	#TODO only if ?x AND zoom_offset
 	elif '?x'in self.path:
@@ -61,7 +61,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	    new_x,new_y = self.get_new_coordinate()
 	    self.imageAdministrator.change_offset(new_x,new_y)
 	    #calculate absolute zoomfactor and offset from all the relative factors in the recent browsing history
-	    Mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())	
+	    mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())	
 	    #imageheight,imagewidth: pixelsize of the image
             #maxiteration: directly correlated to the duration of the calculation ?when does it get too long
             #offsetx, offsety: new center of the reference image
@@ -69,10 +69,10 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             #colorscheme: 12 elements, default value is green	
 	    self.get_main_page()   
 	#TODO /zoom_in /zoom_out and /zoom
-	elif self.path.find("/MandelbrotImg/") >=0:
+	elif self.path.find("/images/") >=0:
 	    #extract the name of the requested picture
 	    #do_GET_image("Imagename")
-	    self.get_image(self.path.rpartition("MandelbrotImg/")[-1])
+	    self.get_image(self.path.rpartition("images/")[-1])
 	    
 	else:
 	    self.send_response(404)
@@ -82,17 +82,17 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-type", "text/html")
         self.end_headers()
-	main_page_html = open("Mandelbrotserver.html","r")
+	main_page_html = open("main.html","r")
 	self.wfile.write(main_page_html.read())
 
 #TODO else only after imagename not existent 
     def get_image(self,imagename):
-    #responds to a request for an image by checking for the file in folder /MandelbrotImg	
+    #responds to a request for an image by checking for the file in folder /images	
 	if imagename.endswith(".png"):
 	    self.send_response(200)
 	    self.send_header("Content-type","image/png")
 	    self.end_headers()	
-	    pngfile = open("MandelbrotImg/"+imagename,"rb")
+	    pngfile = open("images/"+imagename,"rb")
 	    self.wfile.write(pngfile.read())
 	    pngfile.close()
 	#elif: expand to other imagedatatypes if necessary here
