@@ -48,6 +48,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	BaseHTTPServer.BaseHTTPRequestHandler.__init__(self,request,client_adress,server)
 
 	#"""standard zoom when clicking into the image"""
+#TODO hash table for url path instead of if elif
     def do_GET(self):
 	if self.path.endswith("index.html"):
 	    mandelbrot.calculate_mandelbrot()
@@ -73,9 +74,13 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	    #extract the name of the requested picture
 	    #do_GET_image("Imagename")
 	    self.get_image(self.path.rpartition("images/")[-1])
-	    
+	elif self.path.find("save") >=0:
+            self.save_fractal_param_dat()
+               
 	else:
 	    self.send_response(404)
+
+
 #TODO self.send_header("Content-type","application/x-download")
     def get_main_page(self):
         """Respond to a GET request."""
@@ -101,6 +106,19 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
     #handles http://localhost:8080/?x=658&y=586 requests
     #TODO should handle http://localhost:8080/zoom_offset?x=658&y=586 requests
+
+
+    def save_fractal_param_dat(self):
+        self.send_response(200)
+        self.send_header("Content-type","application/x-download")
+        self.send_header("Content-disposition","attachement; filename='filenametest'")
+        self.end_headers()
+        
+        fractal_para=self.imageAdministrator.get_parameters()
+        fractal_para_str=repr(fractal_para)
+
+        self.wfile.write(fractal_para_str)
+
 
     def get_new_coordinate(self):
     #extract new center of image after the user click out of the url
