@@ -75,7 +75,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	    #do_GET_image("Imagename")
 	    self.get_image(self.path.rpartition("images/")[-1])
 	elif self.path.find("save") >=0:
-            self.save_fractal_param_dat()
+            self.download_fractal_param_dat()
                
 	else:
 	    self.send_response(404)
@@ -108,7 +108,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     #TODO should handle http://localhost:8080/zoom_offset?x=658&y=586 requests
 
 
-    def save_fractal_param_dat(self):
+    def download_fractal_param_dat(self):
         self.send_response(200)
         self.send_header("Content-type","application/x-download")
         self.send_header("Content-disposition","attachement; filename='filenametest'")
