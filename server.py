@@ -13,6 +13,8 @@ class ImageAdministrator():
     """stores the current parameters of the image which the user changes until he is satisfied and saves the image and the accompaning calculating data to file""" 
     GREEN= [(0,0,0),(51,102,51),(51,102,77),(51,102,102),(51,77,102),(51,51,102),(77,51,102),(102,51,102),(102,51,77),(102,51,51),(102,77,51),(102,102,51),(77,102,51)]
     #"""default colorscheme in green"""
+
+
     def __init__(self):
 	self.height = 600
 	self.width = 600
@@ -22,40 +24,60 @@ class ImageAdministrator():
         self.yabsolutestart = -2.0
         self.yabsoluteend = 2.0
 	self.colorscheme = self.GREEN	
-        print 'initializing' 
+
+
     def change_imagesize(self,new_width, new_height):
 #TODO remember to adjust zoomfactor if zoom=1 and image not quadratic
         """adjust dependent offsetabsolute"""
         pass
+
+
     def reset_to_default(self):
 	pass
+
+
     def change_zoom(self,zoom_relative):
-        #zoom_relative has a value of 1 to 100 with 1 being the original image
+        #zoom = 1 original image
+        #zoom = 2 halfs the section of the image 
+        newimagewidth   = (self.xabsoluteend-self.xabsolutestart)/zoom_relative
+        newimageheight  = (self.yabsoluteend-self.yabsolutestart)/zoom_relative 
 
+        self.xabsolutestart += 0.5*(self.xabsoluteend-self.xabsolutestart-newimagewidth) 
+        self.yabsolutestart += 0.5*(self.yabsoluteend-self.yabsolutestart-newimageheight)
+        self.xabsoluteend   -= 0.5*(self.xabsoluteend-self.xabsolutestart-newimagewidth)
+        self.yabsoluteend   -= 0.5*(self.yabsoluteend-self.yabsolutestart-newimageheight)     
 
-	pass
-    def change_offset_and_zoom(self, new_center_x, new_center_y,zoom_on_click):
-        print self.xabsolutestart, self.xabsoluteend
-        xabsoluteoffset = (new_center_x - self.width/2)*(self.xabsoluteend - self.xabsolutestart)/self.width
-        yabsoluteoffset = (new_center_y - self.height/2)*(self.yabsoluteend - self.yabsolutestart)/self.height
+    def change_offset(self, xoffsetfactor, yoffsetfactor):
+        xabsoluteoffset = xoffsetfactor*(self.xabsoluteend - self.xabsolutestart) 
+        yabsoluteoffset = yoffsetfactor*(self.yabsoluteend - self.yabsolutestart) 
+
 	self.xabsolutestart += xabsoluteoffset
 	self.yabsolutestart += yabsoluteoffset
         self.xabsoluteend += xabsoluteoffset
         self.yabsoluteend += yabsoluteoffset       
-        
-        
-        print self.xabsolutestart, self.xabsoluteend, zoom_on_click,( self.xabsoluteend-self.xabsolutestart)
-        #the zoom_on_click halfs the orignal size while the center stays the same
-	self.xabsolutestart  += 0.5/zoom_on_click*(self.xabsoluteend-self.xabsolutestart)
-	self.yabsolutestart  += 0.5/zoom_on_click*(self.yabsoluteend-self.yabsolutestart)
-	self.xabsoluteend    -= 0.5/zoom_on_click*(self.xabsoluteend-self.xabsolutestart)
-	self.yabsoluteend    -= 0.5/zoom_on_click*(self.yabsoluteend-self.yabsolutestart)
 
-        print self.xabsolutestart, self.xabsoluteend
+
+    def change_offset_and_zoom(self, new_center_x, new_center_y,zoom_on_click):
+        #calculate offset in the pixelcoordinates then transform to the absolute complex plane and calculate the new cornerpoints    
+        xabsoluteoffset = (new_center_x - self.width/2)*(self.xabsoluteend - self.xabsolutestart)/self.width
+        yabsoluteoffset = (new_center_y - self.height/2)*(self.yabsoluteend - self.yabsolutestart)/self.height
+
+	self.xabsolutestart += xabsoluteoffset
+	self.yabsolutestart += yabsoluteoffset
+        self.xabsoluteend += xabsoluteoffset
+        self.yabsoluteend += yabsoluteoffset       
+
+        #the zoom_on_click reduces the original size while the center stays the same
+        self.change_zoom(zoom_on_click)
+
+
     def change_colorscheme(self):
 	pass
+
+
     def change_maxiteration(self):
 	pass
+
     def get_parameters(self):
 	return self.height, self.width, self.maxiteration, self.xabsolutestart, self.xabsoluteend, self.yabsolutestart, self.yabsoluteend, self.colorscheme
     def save_parameters_to_file(self):
@@ -64,11 +86,16 @@ class ImageAdministrator():
 
 #TODO rename file, restructre if/else part and add comments what the user actions are 
 class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
-    ZOOM_ON_CLICK= 2
+    ZOOM_ON_CLICK= 2.0
+    OFFSETFACTOR = 0.20 #image section moves by 20%    
+    ZOOMRELATIVE = 2.0    
+        
+
     def __init__(self,request, client_adress,server):
         self.imageAdministrator = server.imageAdministrator
         BaseHTTPServer.BaseHTTPRequestHandler.__init__(self,request,client_adress,server)
-#"""standard zoom when clicking into the image"""
+
+
 #TODO hash table for url path instead of if elif
     def do_GET(self):
 	if self.path.endswith("index.html"):
@@ -77,14 +104,43 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	elif self.path.endswith("/"):
 	    mandelbrot.calculate_mandelbrot()
 	    self.get_main_page()
-	#TODO only if ?x AND zoom_offset
-	elif '?x'in self.path:
+	elif 'zoom_offset' in self.path:
 	    """when clicking into the image the new image will be calculated centered around the clicked point"""
 	    new_x,new_y = self.get_new_coordinate()
 	    self.imageAdministrator.change_offset_and_zoom(new_x,new_y,self.ZOOM_ON_CLICK)
 	    mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())	
 	    self.get_main_page()   
 	#TODO /zoom_in /zoom_out and /zoom
+            """when clicking on arrow buttons the new image section will move to the corresponding direction"""
+        elif 'offset_right' in self.path:
+            self.imageAdministrator.change_offset(self.OFFSETFACTOR,0)
+            mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
+            self.get_main_page() 
+        elif 'offset_left' in self.path:
+            self.imageAdministrator.change_offset(-self.OFFSETFACTOR,0)
+            mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
+            self.get_main_page() 
+        elif 'offset_up' in self.path:
+            self.imageAdministrator.change_offset(0,-self.OFFSETFACTOR)
+            mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
+            self.get_main_page() 
+        elif 'offset_down' in self.path:
+            self.imageAdministrator.change_offset(0,self.OFFSETFACTOR)
+            mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
+            self.get_main_page() 
+        elif 'zoom_in' in self.path:
+            self.imageAdministrator.change_zoom(self.ZOOMRELATIVE)
+            mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
+            self.get_main_page() 
+        elif 'zoom_out' in self.path:
+            self.imageAdministrator.change_zoom(1/self.ZOOMRELATIVE)
+            mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
+            self.get_main_page() 
+        elif 'zoom' in self.path:
+            #TODO extract zoomfactor
+            self.imageAdministrator.change_zoom(self.ZOOMRELATIVE)
+            mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
+            self.get_main_page() 
 	elif self.path.find("/images/") >=0:
 	    #extract the name of the requested picture
 	    #do_GET_image("Imagename")
@@ -104,6 +160,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.end_headers()
 	main_page_html = open("main.html","r")
 	self.wfile.write(main_page_html.read())
+
 
 #TODO else only after imagename not existent 
     def get_image(self,imagename):

@@ -113,12 +113,17 @@
 	<form	action ="/zoom"
 		method = get>
 		<input   type="range"
+			title = "zoom"
+			name = "zoom"
 		        min="0"
 	        	max="100"
-			value="0"
-			step="20"
+			value="50"
+			step="10"
 			style="-webkit-transform:rotate(-90deg); -moz-transform:rotate(-90deg)"
+			
 			onMouseUp="window.location='/zoom'"/>
+	    	<output name = "zoomfactor"></output>
+
 	</form>
     </div>
     <div>

@@ -6,32 +6,32 @@ import Image, ImageDraw
 """ pydoc
 
 """
-def calculate_mandelbrot(imageheight=400,
-                         imagewidth=400,
+def calculate_mandelbrot(imageheight=600,
+                         imagewidth=600,
                          maxiteration=10,
                             xabsolutestart= -2.0,
                             xabsoluteend=2.0,
                             yabsolutestart=-2.0,
                             yabsoluteend=2.0,
                          colorscheme=[(0,0,0),(51,102,51),(51,102,77),(51,102,102),(51,77,102),(51,51,102),(77,51,102),(102,51,102),(102,51,77),(102,51,51),(102,77,51),(102,102,51),(77,102,51)]):
-        #imageheight,imagewidth: pixelsize of the image
+        #imageheight,imagewidth: pixelsize of the image to be calculated
         #maxiteration: directly correlated to the duration of the calculation ?when does it get too long
-        #absolutestart, absoluteend: the coordinates of the section of the image to be calculated  
+        #absolutestart, absoluteend: the cornerpoints of the section of the image to be calculated in the complex plane 
         #colorscheme: 12 elements, default value is green
-    print xabsolutestart,xabsoluteend
 
-    xCoord = range(imagewidth)
-    yCoord = range(imageheight)
     #possible color schemes
     #GREEN = [(0,0,0),(51,102,51),(51,102,77),(51,102,102),(51,77,102),(51,51,102),(77,51,102),(102,51,102),(102,51,77),(102,51,51),(102,77,51),(102,102,51),(77,102,51)]
     #RED = [(0,0,0),(255,0,0),(255,128,0),(255,255,0),(128,255,0),(0,255,0),(0,255,128),(0,255,255),(0,128,255),(0,0,255),(128,0,255),(255,0,255),(255,0,128)]
     
 
     # create new image file
-    iteration =0
     image = Image.new("RGB", (imagewidth,imageheight))
     draw = ImageDraw.Draw(image)
+
     # iterate over all the points in the image
+    iteration =0
+    xCoord = range(imagewidth)
+    yCoord = range(imageheight)
     for x in xCoord:
         for y in yCoord:
 	    iteration =0
