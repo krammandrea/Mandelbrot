@@ -4,53 +4,46 @@
 <head>
     <title>Mandelbrot</title>
 </head>
-<body>
 
+<body>
+<link rel="stylesheet" type="text/css" href="style/main.css" />
     
 <!-- Mandelbrot image and corresponding offset arrows-->
-    <div    id="der_nagel"
-            style="position: absolute; left:0px; top:0px; width:0px; height:0px">
+    <div    id="der_nagel">
 
-
-    <div    id="layer_image"
-            style="position: absolute; left:0px; top:0px">
-    <form   action="/zoom_offset" 
-            method="get">
-            <input 
-                type="image" 
-                src='/images/Mandelbrot.png' 
-                title='click for zoom' 
-                alt='Mandelbrot' 
-                border="0">
-    </form>
-    </div>
+	<div    id="layer_image">
+	    <form   action="/zoom_offset" 
+		method="get">
+                <input 
+	            type="image" 
+	            src='/images/Mandelbrot.png' 
+		    title='click for zoom' 
+	            alt='Mandelbrot' 
+	            border="0">
+	    </form>
+	</div>
     
 
-    <div    id="layer_circle"
-            style="position: absolute; left:4px; top:4px; width:72px; height:72px">
-    <img
-    
-        type="image"
-        title="circle"
-        alt="circle"
-        width="72"
-        height="72"         
-                src="/images/circle.png"
-                border="0"          
+    <div    id="layer_circle">
+	<img
+	    id="navigation_circle" 
+	    type="image"
+	    title="circle"
+	    alt="circle"
+            src="/images/circle.png"
+            border="0"          
             >
     </div>
 
 
-    <div    id="layer_right"
-	    style="position: absolute; left:44px; top:24px; width:32px; height:32px">	   
-    <form   action ="/offset_right"
-	    method =get>
+    <div    id="layer_right">
+    <form   action="/offset_right"
+	    method=get>
 	    <input
+		id="offset_right"
 		type="image"
 		title="move right"
 		alt="move graphic to the right"
-		width="32"
-		height="32"	    
 		src="/images/arrow_right.png"
 		border="0"	    
 	    >
@@ -58,8 +51,8 @@
     </div>
         <div    id="layer_left"
             style="position: absolute; left:4px; top:24px; width:32px; height:32px">
-     <form  action ="/offset_left"
-	    method =get>
+     <form  action="/offset_left"
+	    method=get>
             <input
                 type="image"
                 title="move left"
@@ -75,8 +68,8 @@
 
     <div    id="layer_down"
             style="position: absolute; left:24px; top:44px; width:32px; height:32px">
-    <form   action ="/offset_down"
-            method =get>
+    <form   action="/offset_down"
+            method=get>
             <input
                 type="image"
                 title="move down"
@@ -89,57 +82,48 @@
     </form>
     </div>
 	<div    id="layer_up"
-		style="position: absolute; left:24px; top:4px; width:32px; height:32px">
-	<form   action ="/offset_up"
-		method =get>
-            <input
-                type="image"
-                title="move up"
-                alt="move graphic up"
-                width="32"
-                height="32"         
-                src="/images/arrow_up.png"
-                border="0"          
-            >
-	</form>
-    </div>
+    		style="position: absolute; left:24px; top:4px; width:32px; height:32px">
+	    <form   action="/offset_up"
+		    method=get>
+		<input
+		    type="image"
+		    title="move up"
+		    alt="move graphic up"
+		    width="32"
+		    height="32"         
+		    src="/images/arrow_up.png"
+		    border="0"          
+		>
+	    </form>
+	</div>
 
     <!--slider and zoombuttons-->
-<!--sTODO email einfuegens-->
-
-<!--sTODO display current zoomfactors-->
-
     <div    style="position:absolute; left:-26px; top:160px">
-	<form	action ="/zoom"
-		method = get>
+	<form	action="/zoom"
+		method=get>
 		<input   type="range"
-			title = "zoom"
-			name = "zoom"
+			title="zoom"
+			name="z"
 		        min="0"
 	        	max="100"
 			value="50"
 			step="10"
 			style="-webkit-transform:rotate(-90deg); -moz-transform:rotate(-90deg)"
-			
-			onMouseUp="window.location='/zoom'"/>
-	    	<output name = "zoomfactor"></output>
+			onMouseUp="submit()"/>
 
 	</form>
-    </div>
-    <div>
+
 	<button onClick="window.location='/zoom_in'"
-	    style="width:25;height:20;position:absolute;left:26px;top:90px">
+	    style="width:25;height:20;position:absolute;left:52px;top:-70px">
 	+
 	</button>
-    </div>
-    <div>
 	<button onClick="window.location='/zoom_out'"            
-		style="width:25;height:20;position:absolute;left:26px;top:230px">
+		style="width:25;height:20;position:absolute;left:52px;top:70px">
 	-
 	</button>
     </div>
 
-    </div>
+</div>
 
     <!--save button-->
  <!--TODO save picture as
@@ -151,8 +135,18 @@
 	Download
     </button>
  <!--TODO Imagesize input field
+ 
 #TODO Iteration input field
 #TODO Colors input fields-->
+
+<!--color picker-->
+	
+    <div    style="width:100;height:50;position:absolute;left:500px;top:100px;z-index:1">
+	<form action="/color"
+		method=get>
+	<script type="text/javascript" src="javascript/jscolor.js"></script>
+	<input class="color" value="66ff01">
+    </div>	
 
 </body>
 </html>

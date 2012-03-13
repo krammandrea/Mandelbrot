@@ -1,0 +1,26 @@
+#der_nagel{ position:absolute;
+	    left:0px;
+	    top:0px;  
+	    width:0px;
+	    height:0px;}
+
+#layer_image{	position:absolute;
+		left:0px;
+		top:0px;}       
+
+#layer_circle{	position:absolute;
+		left:4px;
+		top:4px;}
+
+#navigation_circle{ position: absolute;
+		    width:72px;
+		    height:72px;}
+	    
+#layer_right{	position:absolute;
+		left:44px;
+		top:24px;}
+
+#offset_right{	position: absolute;
+		width:32px;
+		height:32px;}
+		

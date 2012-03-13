@@ -104,13 +104,23 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	elif self.path.endswith("/"):
 	    mandelbrot.calculate_mandelbrot()
 	    self.get_main_page()
+	elif self.path.find("/images/") >=0:
+            pathname = self.path.partition("images/")[1]+self.path.partition("images/")[2]
+            self.get_image(pathname)
+        elif self.path.find("/style/")>=0:
+            self.get_css(self.path.rpartition("style/")[-1])
+        elif "/javascript"in self.path and ".js"in self.path:
+            pathname = self.path.partition("javascript/")[1]+self.path.partition("javascript/")[2]
+            self.get_jscolor(pathname)
+        elif("javascript/"in self.path and(".png" in self.path or ".gif" in self.path)):
+            pathname = self.path.partition("javascript/")[1]+self.path.partition("javascript/")[2]
+            self.get_image(pathname)
 	elif 'zoom_offset' in self.path:
 	    """when clicking into the image the new image will be calculated centered around the clicked point"""
 	    new_x,new_y = self.get_new_coordinate()
 	    self.imageAdministrator.change_offset_and_zoom(new_x,new_y,self.ZOOM_ON_CLICK)
 	    mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())	
 	    self.get_main_page()   
-	#TODO /zoom_in /zoom_out and /zoom
             """when clicking on arrow buttons the new image section will move to the corresponding direction"""
         elif 'offset_right' in self.path:
             self.imageAdministrator.change_offset(self.OFFSETFACTOR,0)
@@ -137,14 +147,9 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
             self.get_main_page() 
         elif 'zoom' in self.path:
-            #TODO extract zoomfactor
             self.imageAdministrator.change_zoom(self.ZOOMRELATIVE)
             mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
             self.get_main_page() 
-	elif self.path.find("/images/") >=0:
-	    #extract the name of the requested picture
-	    #do_GET_image("Imagename")
-	    self.get_image(self.path.rpartition("images/")[-1])
 	elif self.path.find("save") >=0:
             self.download_fractal_param_dat()
                
@@ -161,18 +166,46 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	main_page_html = open("main.html","r")
 	self.wfile.write(main_page_html.read())
 
+    def get_css(self,cssname):
+        if cssname.endswith(".css"):
+            self.send_response(200)
+            self.send_header("Content-type","text/css")
+            self.end_headers()
+            cssfile = open(cssname,"rb")
+            self.wfile.write(cssfile.read())
+            cssfile.close()            
+        else:
+            self.send_response(404)    
+
+    def get_jscolor(self,jscolorpath):
+        if jscolorpath.endswith("jscolor.js"):
+            self.send_response(200)
+            self.send_header("Content-type","text/js")
+            self.end_headers()
+            jscolorfile = open(jscolorpath,"rb")
+            self.wfile.write(jscolorfile.read())
+            jscolorfile.close()
+        else:
+            self.send_response(404)        
 
 #TODO else only after imagename not existent 
-    def get_image(self,imagename):
+    def get_image(self,imagepathname):
     #responds to a request for an image by checking for the file in folder /images	
-	if imagename.endswith(".png"):
+	if imagepathname.endswith(".png"):
 	    self.send_response(200)
 	    self.send_header("Content-type","image/png")
 	    self.end_headers()	
-	    pngfile = open("images/"+imagename,"rb")
+	    pngfile = open(imagepathname,"rb")
 	    self.wfile.write(pngfile.read())
 	    pngfile.close()
-	#elif: expand to other imagedatatypes if necessary here
+        elif imagepathname.endswith(".gif"):
+	    self.send_response(200)
+	    self.send_header("Content-type","image/gif")
+	    self.end_headers()	
+	    giffile = open(imagepathname,"rb")
+	    self.wfile.write(giffile.read())
+	    giffile.close()
+
 	else:
 	    self.send_response(404)
 
