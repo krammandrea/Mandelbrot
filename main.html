@@ -8,6 +8,15 @@
 <body>
 <link rel="stylesheet" type="text/css" href="style/main.css" />
     
+<script type="text/javascript">
+function hideshow(which)
+    {
+    if (which.style.display=="block")
+	which.style.display="none"
+    else
+	which.style.display="block"
+    }
+</script>
 <!-- Mandelbrot image and corresponding offset arrows-->
     <div    id="der_nagel">
 
@@ -22,9 +31,8 @@
 	            border="0">
 	    </form>
 	</div>
-    
 
-    <div    id="layer_circle">
+    <div    id="layer_navigation">
 	<img
 	    id="navigation_circle" 
 	    type="image"
@@ -33,10 +41,7 @@
             src="/images/circle.png"
             border="0"          
             >
-    </div>
 
-
-    <div    id="layer_right">
     <form   action="/offset_right"
 	    method=get>
 	    <input
@@ -48,107 +53,202 @@
 		border="0"	    
 	    >
     </form>
-    </div>
-        <div    id="layer_left"
-            style="position: absolute; left:4px; top:24px; width:32px; height:32px">
-     <form  action="/offset_left"
+
+    <form  action="/offset_left"
 	    method=get>
             <input
+		id="offset_left"
                 type="image"
                 title="move left"
                 alt="move graphic to the left"
-                width="32"
-                height="32"         
                 src="/images/arrow_left.png"
                 border="0"          
             >
     </form>
-    </div>
     
 
-    <div    id="layer_down"
-            style="position: absolute; left:24px; top:44px; width:32px; height:32px">
     <form   action="/offset_down"
             method=get>
             <input
+		id="offset_down"
                 type="image"
                 title="move down"
                 alt="move graphic down"
-                width="32"
-                height="32"         
                 src="/images/arrow_down.png"
                 border="0"          
             >
     </form>
-    </div>
-	<div    id="layer_up"
-    		style="position: absolute; left:24px; top:4px; width:32px; height:32px">
-	    <form   action="/offset_up"
-		    method=get>
-		<input
-		    type="image"
-		    title="move up"
-		    alt="move graphic up"
-		    width="32"
-		    height="32"         
-		    src="/images/arrow_up.png"
-		    border="0"          
-		>
-	    </form>
-	</div>
+
+     <form   action="/offset_up"
+ 	     method=get>
+ 	<input
+ 	    id="offset_up"
+	    type="image"
+ 	    title="move up"
+    	    alt="move graphic up"
+ 	    src="/images/arrow_up.png"
+    	    border="0"          
+ 		>
+    </form>
 
     <!--slider and zoombuttons-->
-    <div    style="position:absolute; left:-26px; top:160px">
+    <div id="zoom_navigation">
 	<form	action="/zoom"
 		method=get>
-		<input   type="range"
+		<input  id="zoom_slider"
+			type="range"
 			title="zoom"
 			name="z"
-		        min="0"
-	        	max="100"
+			min="0"
+			max="100"
 			value="50"
 			step="10"
-			style="-webkit-transform:rotate(-90deg); -moz-transform:rotate(-90deg)"
 			onMouseUp="submit()"/>
 
 	</form>
 
-	<button onClick="window.location='/zoom_in'"
-	    style="width:25;height:20;position:absolute;left:52px;top:-70px">
+	<button id="zoom_in"
+		onClick="window.location='/zoom_in'">
 	+
 	</button>
-	<button onClick="window.location='/zoom_out'"            
-		style="width:25;height:20;position:absolute;left:52px;top:70px">
+	<button id="zoom_out"
+		onClick="window.location='/zoom_out'">            
 	-
 	</button>
     </div>
-
+    </div>
 </div>
 
+<!--customize box-->
+<div	id="layer_customize_box">
+    <!--change size form-->
+    <h3>
+	<a  href="javascript:hideshow(document.getElementById('change_size'))">
+	    pick the size
+	</a>
+    </h3>
+    <form   action="/change_size"
+	    method=get
+	    id="change_size">
+	    Size:
+	    <input  id="imagewidth"
+		    type="text"
+		    title="width"
+		    name="width"
+		    maxlength=5
+		    size=5>  x 
+	    <input  id="imageheight"
+		    type="text"
+		    title="height"
+		    name="height"
+		    maxlength=5
+		    size=5>px
+	    <br/>
+	    <input  id="submit_change_size"
+		    type="submit"
+		    value="change size">
+    </form>
+    <!--change the colors-->
+    <hr/>
+    <h3>
+	<a  href="javascript:hideshow(document.getElementById('color_pickers'))">
+	pick the colors
+	</a>
+    </h3>
+    <script type="text/javascript" src="javascript/jscolor.js"></script>
+    <div    id="color_pickers">
+    <form   action="/change_color"
+	    method=get
+	    id="color_pickers_form">
+	    <input  onclick="remove()"
+		    type="button"
+		    value="remove color">
+		    
+		    <script type="text/javascript">
+		    function remove()
+		    {
+			var color_pickers = document.getElementById("color_pickers_form");
+			var first_color = document.getElementById("after_buttons").nextSibling;
+			color_pickers.removeChild(first_color);
+			var first_color = document.getElementById("after_buttons").nextSibling;
+			color_pickers.removeChild(first_color);
+
+		    }
+		    </script>
+
+
+	    <input  onclick="add()" 
+		    type="button"
+		    value="add color">
+		    
+		    <script type="text/javascript">
+		    function add() 
+		    {
+			var input = document.createElement('INPUT');
+			input.setAttribute('name','col');
+			input.setAttribute('class','color');
+			// bind jscolor
+			var col = new jscolor.color(input)
+			col.fromString('F2C80A')
+			document.getElementById('color_pickers_form').appendChild(input)	    	    
+			first_color = document.getElementById('first_color')
+			color_pickers = document.getElementById('color_pickers_form')
+			color_pickers.insertBefore(input,first_color)		    
+			var linebreak = document.createElement('br')
+			color_pickers.insertBefore(linebreak,first_color)		    
+		    }
+		    </script>
+	    <br	id="after_buttons"/>
+	    <input  id="first_color"
+		    class="color"
+		    value="66ff01"
+		    name="col"
+		    title="click to choose color"
+		    size=5>
+	    <br/>
+	    <input  class="color"
+		    value="66ff01"
+		    name="col">
+	    <br/>
+	    <input  type="submit"
+		    value="change colors">
+	    <br/>
+	    <hr/>
+	</form>    
+	</div>    
     <!--save button-->
- <!--TODO save picture as
-#TODO save imagedata(offset, zoomfactor ..)s-->
-
-    <button onClick="window.location='/save'"  
-	    style="width:100;height:50;position:absolute;left:500px;top:50px;z-index:1;cursor:pointer"
-	    title="download image parameter">
-	Download
-    </button>
- <!--TODO Imagesize input field
- 
-#TODO Iteration input field
-#TODO Colors input fields-->
-
-<!--color picker-->
+	<div>    
+	    <h3>
+		save
+	    </h3>
 	
-    <div    style="width:100;height:50;position:absolute;left:500px;top:100px;z-index:1">
-	<form action="/color"
-		method=get>
-	<script type="text/javascript" src="javascript/jscolor.js"></script>
-	<input class="color" value="66ff01">
-    </div>	
+	<button	onClick="window.location='/save'"  
+		title="download image parameter">
+	    Download
+	</button>
+	</div>
+	<br/>
+	<hr/>
+	<div>
+	    <h3>
+		other
+	    </h3>
+	    Iteration:
+	    <form   action="/iteration"
+		    method=get>
+		<input  id="change_iteration"
+			type="text"
+			name="iter"
+			size=2>
+	    </form>
+	</div>
+<!--TODO label css for positioning, mako research, -->
+
+    </div>
+ 
+
+<div/>
 
 </body>
 </html>
 
-<!--TODO: if style="" getting to big, put in .css style sheets-->
