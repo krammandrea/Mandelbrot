@@ -1,62 +1,67 @@
-import Image, ImageDraw
+import math, Image, ImageDraw, ImageFilter, testing
 #TODO pydoc commentary, possible separation of saving and calculating the image, formatting input variables, adjust variablenames, how everything works together
-#TODO calculate the absolute zoom from the relative zoom, see what the zoomnumbers do? range? experiment with the zoomfactor, divide through imagewidth/length really necessary?experiment!
 
-
-""" pydoc
-
-"""
-def calculate_mandelbrot(imageheight=600,
-                         imagewidth=600,
-                         maxiteration=10,
+def calculate_mandelbrot(   colorAlg,
+			    imageheight=600,
+			    imagewidth=600,
+			    maxiteration=10,
                             xabsolutestart= -2.0,
                             xabsoluteend=2.0,
                             yabsolutestart=-2.0,
                             yabsoluteend=2.0,
-                         colorscheme=[(0,0,0),(51,102,51),(51,102,77),(51,102,102),(51,77,102),(51,51,102),(77,51,102),(102,51,102),(102,51,77),(102,51,51),(102,77,51),(102,102,51),(77,102,51)]):
-        #imageheight,imagewidth: pixelsize of the image to be calculated
-        #maxiteration: directly correlated to the duration of the calculation ?when does it get too long
-        #absolutestart, absoluteend: the cornerpoints of the section of the image to be calculated in the complex plane 
-        #colorscheme: 12 elements, default value is green
-
-    #possible color schemes
-    #GREEN = [(0,0,0),(51,102,51),(51,102,77),(51,102,102),(51,77,102),(51,51,102),(77,51,102),(102,51,102),(102,51,77),(102,51,51),(102,77,51),(102,102,51),(77,102,51)]
-    #RED = [(0,0,0),(255,0,0),(255,128,0),(255,255,0),(128,255,0),(0,255,0),(0,255,128),(0,255,255),(0,128,255),(0,0,255),(128,0,255),(255,0,255),(255,0,128)]
-    
+                            colorscheme=["000000","338822","883388"]):
+    """ colorAlg:       choice of a coloring algorithm and the colorschemes
+        imageheight,
+        imagewidth:     pixelsize of the image to be calculated
+        maxiteration:   directly correlated to the duration of the calculation
+        absolutestart, 
+        absoluteend:    the cornerpoints of the section of the image to be calculated 
+                        in the complex plane 
+        colorscheme:    the cornerpoints of the continous, colorscheme
+                        minimum number of elements should be 3, the first color
+                        depicts the nonescaping pixels(default = black) 
+                        input according to ImageDraw as hexstring for example "#FFFFFF"
+    """
+    #test_minmax = testing.Test_Minmaxvalue(maxiteration)
 
     # create new image file
     image = Image.new("RGB", (imagewidth,imageheight))
     draw = ImageDraw.Draw(image)
 
     # iterate over all the points in the image
+    escapelimit = 2	#mathematical escapelimit = 2, though other values can be chosen
     iteration =0
     xCoord = range(imagewidth)
     yCoord = range(imageheight)
     for x in xCoord:
         for y in yCoord:
 	    iteration =0
-            
+
             #convert [x,y] in range [0,imagesize] to complex z0 in range [absolutestart, absoluteend]
-                
             z0x = xabsolutestart+(xabsoluteend-xabsolutestart)/imagewidth*x
-        
             z0y = yabsolutestart+(yabsoluteend-yabsolutestart)/imageheight*y
             z0 = complex(z0x,z0y)
 
             #apply equation
-    	    z = complex(0,0)	#z=0+0*j
-    	    while (iteration < maxiteration and  abs(z*z.conjugate()) < 3**2):
-    	       z = z**2 + z0
-    	       iteration = iteration + 1
+    	    z = complex(0,0)	
+    	    while (iteration < maxiteration and  abs(z) < escapelimit):
+                prevz = z
+    	        z = z**2 + z0
+    	        iteration = iteration + 1
+            #test_minmax.record_minmax(colorAlg, iteration,z)
+
     	    #assign color to current point
     	    if iteration == (maxiteration):
-    	       assignedcolor = colorscheme[0]
+    	        assignedcolor = colorscheme[0]
     	    else:
-    	       assignedcolor = colorscheme[iteration%12+1]
-    	    draw.point((x,y),fill=assignedcolor)
+                assignedcolor = colorAlg.straightconnection(colorAlg.distanceestimator1(iteration,z,prevz,escapelimit))
+            #assignedcolor = colorAlg.straightconnection(colorAlg.calculateangle(iteration,z))
+
+	    #convert to "#FF03CD" as required by the ImageDraw library
+	    formattedcolor = "#"+assignedcolor
+    	    draw.point((x,y),fill=formattedcolor)
     
-    # save picture
+    # save picture            
     image.save("images/Mandelbrot.png","PNG")
     
-    # show picture
-    # image.show()
+    #test_minmax.print_minmax()
