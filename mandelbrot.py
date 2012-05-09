@@ -10,17 +10,18 @@ def calculate_mandelbrot(   colorAlg,
                             yabsolutestart=-2.0,
                             yabsoluteend=2.0,
                             colorscheme=["000000","338822","883388"]):
-    """ colorAlg:       choice of a coloring algorithm and the colorschemes
-        imageheight,
-        imagewidth:     pixelsize of the image to be calculated
-        maxiteration:   directly correlated to the duration of the calculation
-        absolutestart, 
-        absoluteend:    the cornerpoints of the section of the image to be calculated 
-                        in the complex plane 
-        colorscheme:    the cornerpoints of the continous, colorscheme
-                        minimum number of elements should be 3, the first color
-                        depicts the nonescaping pixels(default = black) 
-                        input according to ImageDraw as hexstring for example "#FFFFFF"
+    """ 
+    colorAlg:       choice of a coloring algorithm and the colorschemes
+    imageheight,
+    imagewidth:     pixelsize of the image to be calculated
+    maxiteration:   directly correlated to the duration of the calculation
+    absolutestart, 
+    absoluteend:    the cornerpoints of the section of the image to be calculated 
+                    in the complex plane 
+    colorscheme:    the cornerpoints of the continous, colorscheme
+                    minimum number of elements should be 3, the first color
+                    depicts the nonescaping pixels(default = black) 
+                    input according to ImageDraw as hexstring for example "#FFFFFF"
     """
     #test_minmax = testing.Test_Minmaxvalue(maxiteration)
 

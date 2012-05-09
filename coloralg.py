@@ -2,7 +2,7 @@ import math,testing
 
 class ColorAlg():
  
-    def __init__(self,colorscheme):	
+    def __init__(self, colorscheme = ["000000","338822","883388"]):	
 	"""
         initializes algorithms in advance for faster computing time
         """
@@ -28,6 +28,7 @@ class ColorAlg():
         testing.test_catmullrom(self,colorscheme)
         testing.test_straightconnection(self,colorscheme)
 
+        print "__init__", colorscheme
     def initcatmullrom(self):
         """
         precalculate all possible matrixes [P(i-1),P(i),P(i+1),P(i+2)]*Mcr for 

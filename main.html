@@ -21,10 +21,12 @@ function hideshow(which)
     <div    id="der_nagel">
 
 	<div    id="layer_image">
-	    <form   action="/zoom_offset" 
+	    <form   action="form" 
+
 		method="get">
                 <input 
 	            type="image" 
+		    name="zoom_offset"
 	            src='/images/Mandelbrot.png' 
 		    title='click for zoom' 
 	            alt='Mandelbrot' 
@@ -42,11 +44,12 @@ function hideshow(which)
             border="0"          
             >
 
-    <form   action="/offset_right"
+    <form   action="form"
 	    method=get>
 	    <input
 		id="offset_right"
 		type="image"
+		name="offset_right"
 		title="move right"
 		alt="move graphic to the right"
 		src="/images/arrow_right.png"
@@ -54,11 +57,12 @@ function hideshow(which)
 	    >
     </form>
 
-    <form  action="/offset_left"
+    <form  action="form"
 	    method=get>
             <input
 		id="offset_left"
                 type="image"
+		name="offset_left"
                 title="move left"
                 alt="move graphic to the left"
                 src="/images/arrow_left.png"
@@ -67,11 +71,12 @@ function hideshow(which)
     </form>
     
 
-    <form   action="/offset_down"
+    <form   action="form"
             method=get>
             <input
 		id="offset_down"
                 type="image"
+		name="offset_down"
                 title="move down"
                 alt="move graphic down"
                 src="/images/arrow_down.png"
@@ -79,11 +84,12 @@ function hideshow(which)
             >
     </form>
 
-     <form   action="/offset_up"
+     <form   action="form"
  	     method=get>
  	<input
  	    id="offset_up"
 	    type="image"
+	    name="offset_up"
  	    title="move up"
     	    alt="move graphic up"
  	    src="/images/arrow_up.png"
@@ -93,12 +99,13 @@ function hideshow(which)
 
     <!--slider and zoombuttons-->
     <div id="zoom_navigation">
-	<form	action="/zoom"
+	<form	action="form"
 		method=get>
 		<input  id="zoom_slider"
 			type="range"
-			title="zoom"
 			name="z"
+			title="zoom"
+			alt="choose the zoomfactor"
 			min="0"
 			max="100"
 			value="50"
@@ -127,20 +134,22 @@ function hideshow(which)
 	    pick the size
 	</a>
     </h3>
-    <form   action="/change_size"
+    <form   action="change_size"
 	    method=get
 	    id="change_size">
 	    Size:
 	    <input  id="imagewidth"
 		    type="text"
-		    title="width"
-		    name="width"
+		    name="pxwidth"
+		    title="pxwidth"
+		    alt="pixel width"
 		    maxlength=5
 		    size=5>  x 
 	    <input  id="imageheight"
 		    type="text"
-		    title="height"
-		    name="height"
+		    name="pxheight"
+		    title="pxheight"
+		    alt="pixel height"
 		    maxlength=5
 		    size=5>px
 	    <br/>
@@ -234,11 +243,12 @@ function hideshow(which)
 		other
 	    </h3>
 	    Iteration:
-	    <form   action="/iteration"
+	    <form   action="form"
 		    method=get>
 		<input  id="change_iteration"
 			type="text"
 			name="iter"
+			alt="choose number of iterations"
 			size=2>
 	    </form>
 	</div>
