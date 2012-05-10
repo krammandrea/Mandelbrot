@@ -26,9 +26,8 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 #TODO hash table for url path instead of if elif
     def do_GET(self):
         query  = urlparse.parse_qs(urlparse.urlparse(self.path).query)
-        #extract the requested url path and strip the first "/" for later use with open
+        #extract the requested url path and strip the first "/" for later use with open()
         url_path = string.lstrip(urlparse.urlparse(self.path).path,"/")
-        print query,url_path
 
 	if "index.html" in url_path:
 	    mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())	
@@ -37,80 +36,95 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	elif self.path.endswith("/"):
 	    mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())	
 	    self.get_main_page()
-
-	elif "images/" in url_path:
+#TODO only /images or /jscolor
+	elif ".png" in url_path or ".gif" in url_path:
             self.get_image(url_path)
 
-        elif "style/" in url_path:
+        elif "style" in url_path:
             self.get_css(url_path)
+
+        elif ".js"in url_path:
+            self.get_jscolor(url_path)
 
         elif "change_color" in url_path:
             new_colors = self.get_colors(query)
             self.imageAdministrator.change_colorscheme(new_colors)
-            self.colorAlg.__init__(new_colors[1:len(new_colors)])
+            self.colorAlg.initcolorscheme(new_colors[1:len(new_colors)])
 	    mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())	
             self.get_main_page()
-        elif self.path.find("iteration")>=0:
-            new_iteration = self.get_iteration(self.path.partition("iteration")[2])
+
+        elif "change_iteration" in url_path:
+            new_iteration = self.get_iteration(query)
             self.imageAdministrator.change_maxiteration(new_iteration)
 	    mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())	
             self.get_main_page()
-        elif self.path.find("change_size")>=0:
+
+        elif "change_size" in url_path:
             new_width,new_height = self.get_size(query)
             self.imageAdministrator.change_imagesize(new_width,new_height)
 	    mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())	
             self.get_main_page()
-        elif "section" in self.path:
-            new_borderlines = self.getborderlines(self.path.partition("section")[2])
+
+        elif "section" in url_path:
+            new_borderlines = self.get_borderlines(query)
             self.imageAdministrator.change_section(new_borderlines)
             mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
             self.get_main_page()
-        elif "/javascript"in self.path and ".js"in self.path:
-            pathname = self.path.partition("javascript/")[1]+self.path.partition("javascript/")[2]
-            self.get_jscolor(pathname)
-        elif("javascript/"in self.path and(".png" in self.path or ".gif" in self.path)):
-            pathname = self.path.partition("javascript/")[1]+self.path.partition("javascript/")[2]
-            self.get_image(pathname)
-	elif 'zoom_offset' in self.path:
-	    """when clicking into the image the new image will be calculated centered around the clicked point"""
-	    new_x,new_y = self.get_new_coordinate()
+
+	elif 'zoom_offset' in url_path:
+	    """
+	    when clicking into the image the new image will be calculated centered 
+	    around the clicked point
+	    """
+	    new_x,new_y = self.get_new_coordinate(query)
 	    self.imageAdministrator.change_offset_and_zoom(new_x,new_y,self.ZOOM_ON_CLICK)
 	    mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())	
 	    self.get_main_page()   
-            """when clicking on arrow buttons the new image section will move to the corresponding direction"""
-        elif 'offset_right' in self.path:
+
+	    """
+	    when clicking on arrow buttons the new image section will move to the 
+	    corresponding direction
+	    """
+        elif 'offset_right' in url_path:
             self.imageAdministrator.change_offset(self.OFFSETFACTOR,0)
             mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
             self.get_main_page() 
-        elif 'offset_left' in self.path:
+
+        elif 'offset_left' in url_path:
             self.imageAdministrator.change_offset(-self.OFFSETFACTOR,0)
             mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
             self.get_main_page() 
-        elif 'offset_up' in self.path:
+
+        elif 'offset_up' in url_path:
             self.imageAdministrator.change_offset(0,-self.OFFSETFACTOR)
             mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
             self.get_main_page() 
-        elif 'offset_down' in self.path:
+
+        elif 'offset_down' in url_path:
             self.imageAdministrator.change_offset(0,self.OFFSETFACTOR)
             mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
             self.get_main_page() 
-        elif 'zoom_in' in self.path:
+
+        elif 'zoom_in' in url_path:
             self.imageAdministrator.change_zoom(self.ZOOMRELATIVE)
             mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
             self.get_main_page() 
-        elif 'zoom_out' in self.path:
+
+        elif 'zoom_out' in url_path:
             self.imageAdministrator.change_zoom(1/self.ZOOMRELATIVE)
             mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
             self.get_main_page() 
-        elif 'zoom' in self.path:
+
+        elif 'zoom' in url_path:
             self.imageAdministrator.change_zoom(self.ZOOMRELATIVE)
             mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
             self.get_main_page() 
-	elif self.path.find("save") >=0:
+
+	elif "save" in url_path:
             self.download_fractal_param_dat()
 
 	else:
-	    self.send_response(404)
+	    self.send_response(404, "not in alternative list")
 
 
 #TODO self.send_header("Content-type","application/x-download")
@@ -122,7 +136,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	main_page_html = open("main.html","r")
 	self.wfile.write(main_page_html.read())
 
-#TODO broken
+#TODO catch files not openable
     def get_css(self,csspath):
         if csspath.endswith(".css"):
             self.send_response(200)
@@ -133,6 +147,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             cssfile.close()            
         else:
             self.send_response(404)    
+	    print "no .css file found"
 
 #TODO try catch
     def get_size(self,querydict):
@@ -160,15 +175,21 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
         return new_colors
     
-    def get_iteration(self,iterationstring):
-        regExp = re.compile("[0-9]{1,2}")
-        new_iteration = string.atoi(regExp.findall(iterationstring)[0]) 
-
+    def get_iteration(self,querydict):
+	new_iteration = int(querydict["iter"][0])
+        #regExp = re.compile("[0-9]{1,2}")
+        #new_iteration = string.atoi(regExp.findall(iterationstring)[0]) 
+	#TODO filter bad results
         return new_iteration
 
-    def get_borderlines(self,sectionstring):
-        regExp = re.compile("(-?[0-9]+\.?[0-9]*)")
-        new_borderlines = [float(corner) for corner in regExp.findall(sectionstring)]
+    def get_borderlines(self,querydict):
+	new_borderlines = [0.0 for x in range(4)]
+	new_borderlines[0] = float(querydict["xs"][0])
+	new_borderlines[1] = float(querydict["xe"][0])
+	new_borderlines[2] = float(querydict["ys"][0])
+	new_borderlines[3] = float(querydict["ye"][0])
+#        regExp = re.compile("(-?[0-9]+\.?[0-9]*)")
+#        new_borderlines = [float(corner) for corner in regExp.findall(sectionstring)]
 
         return new_borderlines
 
@@ -208,13 +229,23 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.wfile.write(fractal_para_str)
 
 
-    def get_new_coordinate(self):
-    #extract new center of image after the user click out of the url
-	# find the block of numbers after 'x=' and 'y='
+    def get_new_coordinate(self,querydict):
+	"""
+	extract new center of image after the user click out of the url
+	"""	
+	number = re.compile(r"([0-9]+)")
+	if number.match(querydict["zoom_offset.x"][0]) is None or number.match(querydict["zoom_offset.y"][0]) is None:
+	    self.send_response(400, "offset out of range")
+	#TODO what happens after a 400?    
+	else:
+	    new_x = int(querydict["zoom_offset.x"][0])
+	    new_y = int(querydict["zoom_offset.y"][0])
+	    """
 	regExp = re.compile(r"x=([0-9]+)")
 	new_x= string.atoi(regExp.findall(self.path)[0])
 	regExp = re.compile(r"y=([0-9]+)")
-        new_y = string.atoi(regExp.findall(self.path)[0]) 
+	new_y = string.atoi(regExp.findall(self.path)[0]) 
+	    """
 	return new_x, new_y
  
 	

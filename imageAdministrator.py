@@ -21,8 +21,8 @@ class ImageAdministrator():
         self.yabsoluteend = 2.0
 	self.colorscheme = self.PURPLEGREEN	
 	self.coloralg = colorAlg
-        colorAlg.__init__(self.colorscheme[1:len(self.colorscheme)])
-        print "initaliazing imageAdministrator"
+        colorAlg.initcolorscheme(self.colorscheme[1:len(self.colorscheme)])
+
 
     def change_imagesize(self,new_width, new_height):
         """

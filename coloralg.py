@@ -7,6 +7,13 @@ class ColorAlg():
         initializes algorithms in advance for faster computing time
         """
 
+	self.initcolorscheme(colorscheme)
+	
+
+    def initcolorscheme(self,colorscheme):
+	"""
+	converts 
+	"""
 	#convert the colorscheme from list of strings to rgb matrix
 	self.colorscheme = [[0.0 for x in range(3)] for y in range(len(colorscheme))]
 	for color in range(len(colorscheme)):
@@ -15,25 +22,19 @@ class ColorAlg():
 	    self.colorscheme[color][0] =    float((intcolor&0xff0000)>>16)
 	    self.colorscheme[color][1] =    float((intcolor&0x00ff00)>>8)
 	    self.colorscheme[color][2] =    float((intcolor&0x0000ff)>>0)
-
-	#maximum value for distanceestimation
-	self.maxdistance = 2*math.log10(2**2)
-	self.maxnormalized = len(self.colorscheme)+2.7320
-
-	#precalculate matrixes for catmullrom
-	self.PtimesMcr = [[[0.0 for x in range(4)]for y in range(3)] for z in range(len(colorscheme))]
+    
 	self.initcatmullrom()
 
         #show the current colorscheme
         testing.test_catmullrom(self,colorscheme)
         testing.test_straightconnection(self,colorscheme)
 
-        print "__init__", colorscheme
     def initcatmullrom(self):
         """
         precalculate all possible matrixes [P(i-1),P(i),P(i+1),P(i+2)]*Mcr for 
         the current colorscheme
         """
+	self.PtimesMcr = [[[0.0 for x in range(4)]for y in range(3)] for z in range(len(self.colorscheme))]
         tau = 0.5   #curve sharpness of the spline
         Mcr =[[0.0,-1.0*tau,2.0*tau,-1.0*tau],[2.0*tau,0.0,-5.0*tau,3.0*tau],[0.0,1.0*tau,4.0*tau,-3.0*tau],[0.0,0.0,-1.0*tau,1.0*tau]]    
 	for x in range(len(self.colorscheme)):

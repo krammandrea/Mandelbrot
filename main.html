@@ -21,7 +21,7 @@ function hideshow(which)
     <div    id="der_nagel">
 
 	<div    id="layer_image">
-	    <form   action="form" 
+	    <form   action="zoom_offset" 
 
 		method="get">
                 <input 
@@ -44,7 +44,7 @@ function hideshow(which)
             border="0"          
             >
 
-    <form   action="form"
+    <form   action="offset_right"
 	    method=get>
 	    <input
 		id="offset_right"
@@ -57,7 +57,7 @@ function hideshow(which)
 	    >
     </form>
 
-    <form  action="form"
+    <form  action="offset_left"
 	    method=get>
             <input
 		id="offset_left"
@@ -71,7 +71,7 @@ function hideshow(which)
     </form>
     
 
-    <form   action="form"
+    <form   action="offset_down"
             method=get>
             <input
 		id="offset_down"
@@ -84,7 +84,7 @@ function hideshow(which)
             >
     </form>
 
-     <form   action="form"
+     <form   action="offset_up"
  	     method=get>
  	<input
  	    id="offset_up"
@@ -99,7 +99,7 @@ function hideshow(which)
 
     <!--slider and zoombuttons-->
     <div id="zoom_navigation">
-	<form	action="form"
+	<form	action="zoom"
 		method=get>
 		<input  id="zoom_slider"
 			type="range"
@@ -243,7 +243,7 @@ function hideshow(which)
 		other
 	    </h3>
 	    Iteration:
-	    <form   action="form"
+	    <form   action="change_iteration"
 		    method=get>
 		<input  id="change_iteration"
 			type="text"

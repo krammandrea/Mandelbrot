@@ -24,6 +24,7 @@ def calculate_mandelbrot(   colorAlg,
                     input according to ImageDraw as hexstring for example "#FFFFFF"
     """
     #test_minmax = testing.Test_Minmaxvalue(maxiteration)
+    print "calculating mandelbrot"
 
     # create new image file
     image = Image.new("RGB", (imagewidth,imageheight))
