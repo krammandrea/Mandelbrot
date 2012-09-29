@@ -1,7 +1,7 @@
 import ImageDraw,Image
 
 #testing catmullrom with continuos values
-
+#TODO test all coloring algorithm combinations 
 def test_catmullrom(colorAlg,colorscheme):
 
     imagewidth = 400

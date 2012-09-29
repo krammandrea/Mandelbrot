@@ -3,20 +3,13 @@
 <html>
 <head>
     <title>Mandelbrot</title>
+    <script type="text/javascript" src="javascript/MbMainHelpers.js"></script>
+    <script type="text/javascript" src="javascript/jscolor.js"></script>
 </head>
 
 <body>
 <link rel="stylesheet" type="text/css" href="style/main.css" />
-    
-<script type="text/javascript">
-function hideshow(which)
-    {
-    if (which.style.display=="block")
-	which.style.display="none"
-    else
-	which.style.display="block"
-    }
-</script>
+
 <!-- Mandelbrot image and corresponding offset arrows-->
     <div    id="der_nagel">
 
@@ -30,7 +23,10 @@ function hideshow(which)
 	            src='/images/Mandelbrot.png' 
 		    title='click for zoom' 
 	            alt='Mandelbrot' 
-	            border="0">
+		    opacity='0.8'
+	            border="0"
+		    onsubmit="javascript:MBMAINHELPERS.calculatingImageEffect(document.getElementById('layer_image'),document.getElementById('progress_bar'))">
+		    <!--TODO form submit cancels the effect-->
 	    </form>
 	</div>
 
@@ -115,30 +111,55 @@ function hideshow(which)
 	</form>
 
 	<button id="zoom_in"
-		onClick="window.location='/zoom_in'">
-	+
+	    onClick="window.location='/zoom_in'"
+	    value=""
+	    class="button add_button">
+	
 	</button>
 	<button id="zoom_out"
-		onClick="window.location='/zoom_out'">            
-	-
+	    onClick="window.location='/zoom_out'"
+	    value=""
+	    class="button minus_button">            
+	
 	</button>
     </div>
     </div>
 </div>
 
+<!--progress bar and greying out effect-->
+<progress   
+    id="progress_bar"
+    value="22"
+    max="100"
+    text="Calculating new image">
+    Progress: 22% done.
+    </progress>
+
+
 <!--customize box-->
 <div	id="layer_customize_box">
     <!--change size form-->
-    <h3>
-	<a  href="javascript:hideshow(document.getElementById('change_size'))">
-	    pick the size
-	</a>
-    </h3>
+    <div    class= "dropDownContent"
+	    onclick= "javascript:MBMAINHELPERS.hideShowBlock(document.getElementById('change_size'))"
+	    title="show sizing options">
+	<h3>
+	    <span>
+		pick the size
+	    </span>
+	    <span>
+		<img	src="images/arrow_down.png"
+			class="dropDownArrow" />
+	    </span>
+	</h3>
+    </div>
     <form   action="change_size"
-	    method=get
+	    name="change_size"
+	    onSubmit="javascript:return MBMAINHELPERS.validateSizeInput(document.getElementById('change_size'))"
+	    method="get"
 	    id="change_size">
 	    Size:
 	    <input  id="imagewidth"
+		    class="button inputfield"
 		    type="text"
 		    name="pxwidth"
 		    title="pxwidth"
@@ -146,6 +167,7 @@ function hideshow(which)
 		    maxlength=5
 		    size=5>  x 
 	    <input  id="imageheight"
+		    class="button inputfield"
 		    type="text"
 		    name="pxheight"
 		    title="pxheight"
@@ -154,85 +176,99 @@ function hideshow(which)
 		    size=5>px
 	    <br/>
 	    <input  id="submit_change_size"
+		    class="button text_button"
 		    type="submit"
 		    value="change size">
     </form>
     <!--change the colors-->
-    <hr/>
-    <h3>
-	<a  href="javascript:hideshow(document.getElementById('color_pickers'))">
-	pick the colors
-	</a>
-    </h3>
-    <script type="text/javascript" src="javascript/jscolor.js"></script>
+    <hr	/>
+    <br />
+    <div    class="dropDownContent"
+	    onclick="javascript:MBMAINHELPERS.hideShowBlock(document.getElementById('color_pickers'))"
+	    title="show coloring options">
+	<h3>
+	    <span>
+		pick the colors
+	    </span>
+	    <span> 
+		<img	src="images/arrow_down.png"
+			class="dropDownArrow" />
+		
+	    </span>
+	</h3>
+    </div>
     <div    id="color_pickers">
     <form   action="/change_color"
-	    method=get
-	    id="color_pickers_form">
-	    <input  onclick="remove()"
-		    type="button"
-		    value="remove color">
-		    
-		    <script type="text/javascript">
-		    function remove()
-		    {
-			var color_pickers = document.getElementById("color_pickers_form");
-			var first_color = document.getElementById("after_buttons").nextSibling;
-			color_pickers.removeChild(first_color);
-			var first_color = document.getElementById("after_buttons").nextSibling;
-			color_pickers.removeChild(first_color);
+	    id="color_pickers_form"
+	    onSubmit="javascript: return MBMAINHELPERS.validateColorInput(document.getElementById('color_pickers_form'))"
+	    method=get>
 
-		    }
-		    </script>
+	    <button  onclick="javascript:MBMAINHELPERS.resetColors()" 
+		    class="button text_button"
+		    type="reset"
+		    title="reset to the original colorscheme">
+		reset
+	    </button>
 
-
-	    <input  onclick="add()" 
-		    type="button"
-		    value="add color">
-		    
-		    <script type="text/javascript">
-		    function add() 
-		    {
-			var input = document.createElement('INPUT');
-			input.setAttribute('name','col');
-			input.setAttribute('class','color');
-			// bind jscolor
-			var col = new jscolor.color(input)
-			col.fromString('F2C80A')
-			document.getElementById('color_pickers_form').appendChild(input)	    	    
-			first_color = document.getElementById('first_color')
-			color_pickers = document.getElementById('color_pickers_form')
-			color_pickers.insertBefore(input,first_color)		    
-			var linebreak = document.createElement('br')
-			color_pickers.insertBefore(linebreak,first_color)		    
-		    }
-		    </script>
-	    <br	id="after_buttons"/>
-	    <input  id="first_color"
-		    class="color"
-		    value="66ff01"
-		    name="col"
-		    title="click to choose color"
-		    size=5>
-	    <br/>
-	    <input  class="color"
-		    value="66ff01"
-		    name="col">
-	    <br/>
 	    <input  type="submit"
-		    value="change colors">
+		    class="button text_button"
+		    title="calculate new image with new colorscheme"
+		    value="commit changes">
 	    <br/>
-	    <hr/>
+	
+	     <div class ="color_block">
+		<input  
+		    class="button color"	    
+		    id="first_color"
+		    name="col"
+		    value="66ff66"
+
+		    title="click to choose color">
+		<br/>
+	    </div>
+	    <button onclick="javascript:MBMAINHELPERS.rotateColors()" 
+		    type="button"
+		    class="button"
+		    id="rotate_button"
+		    title="rotate the order of the colors"
+		    value=" "> 
+	    </button>
+
+	    <div id="color_pickers_form_secondary_colors">
+		<div class="color_block">
+		<button  onclick="javascript:MBMAINHELPERS.addColor(this.parentNode)" 
+			class="button add_button"
+			type="button"
+			value=""
+			title="add a color below">
+		</button>
+		<input  class="button color"
+			value="66ff01"
+			name="col"
+			title="click to choose color">
+		<button  onclick="javascript:MBMAINHELPERS.removeColor(this.parentNode)"
+			class="button remove_button"
+			type="button"
+			value=""
+			title="remove this color">
+		</button>
+		
+		<br/>
+		</div>
+	    </div>
+	    </br> <!--needed as last child node-->
 	</form>    
 	</div>    
+	<hr />
     <!--save button-->
+	<br />
 	<div>    
 	    <h3>
 		save
 	    </h3>
-	
 	<button	onClick="window.location='/save'"  
-		title="download image parameter">
+	    title="download image parameter"
+	    class="button text_button">
 	    Download
 	</button>
 	</div>
@@ -244,8 +280,11 @@ function hideshow(which)
 	    </h3>
 	    Iteration:
 	    <form   action="change_iteration"
+		    onsubmit="javascript:return MBMAINHELPERS.validateIterationInput(document.getElementById('change_iteration'))"
+		    id="change_iteration"
 		    method=get>
-		<input  id="change_iteration"
+		<input  id="iteration"
+			class="button inputfield"
 			type="text"
 			name="iter"
 			alt="choose number of iterations"

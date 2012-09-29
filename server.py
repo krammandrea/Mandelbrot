@@ -44,7 +44,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.get_css(url_path)
 
         elif ".js"in url_path:
-            self.get_jscolor(url_path)
+            self.get_javascript(url_path)
 
         elif "change_color" in url_path:
             new_colors = self.get_colors(query)
@@ -157,10 +157,10 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         return new_width,new_height
 
 
-    def get_jscolor(self,jscolorpath):
-        if jscolorpath.endswith("jscolor.js"):
+    def get_javascript(self,jscolorpath):
+        if jscolorpath.endswith(".js"):
             self.send_response(200)
-            self.send_header("Content-type","text/js")
+            self.send_header("Content-type","text/javascript")
             self.end_headers()
             jscolorfile = open(jscolorpath,"rb")
             self.wfile.write(jscolorfile.read())
