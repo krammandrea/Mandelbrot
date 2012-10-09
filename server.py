@@ -47,24 +47,32 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.get_javascript(url_path)
 
         elif "change_color" in url_path:
-            new_colors = self.get_colors(query)
-            self.imageAdministrator.change_colorscheme(new_colors)
-            self.colorAlg.initcolorscheme(new_colors[1:len(new_colors)])
-	    mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())	
-            self.get_main_page()
+	    if(self.imageAdministrator.isColorInputValid(query['col'])):
+		self.imageAdministrator.change_colorscheme(query['col'])
+		self.colorAlg.initcolorscheme(query['col'][1:len(query['col'])])
+		mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())	
+	    else:
+		pass #TODO put useralert on mainpage
+	    self.get_main_page()
 
         elif "change_iteration" in url_path:
-            new_iteration = self.get_iteration(query)
-            self.imageAdministrator.change_maxiteration(new_iteration)
-	    mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())	
-            self.get_main_page()
+	    iterationString = query["iter"][0]
+	    if self.imageAdministrator.isIterationInputValid(iterationString):
+		self.imageAdministrator.change_maxiteration(int(iterationString))
+		mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())	
+	    else:
+		pass	#TODO put useralert on mainpage
+	    self.get_main_page()
 
         elif "change_size" in url_path:
-            new_width,new_height = self.get_size(query)
-            self.imageAdministrator.change_imagesize(new_width,new_height)
-	    mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())	
-            self.get_main_page()
-
+	    if (self.imageAdministrator.isSizeInputValid(query['pxwidth'][0]) and 
+		self.imageAdministrator.isSizeInputValid(query['pxheight'][0])):
+		self.imageAdministrator.change_imagesize(int(query['pxwidth'][0]),int(query['pxheight'][0]))
+		mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())	
+	    else:
+		pass	#TODO put useralert on mainpage
+	    self.get_main_page()
+		
         elif "section" in url_path:
             new_borderlines = self.get_borderlines(query)
             self.imageAdministrator.change_section(new_borderlines)
@@ -149,13 +157,6 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_response(404)    
 	    print "no .css file found"
 
-#TODO try catch
-    def get_size(self,querydict):
-        new_width = int(querydict['pxwidth'][0])
-        new_height = int(querydict['pxheight'][0])
-
-        return new_width,new_height
-
 
     def get_javascript(self,jscolorpath):
         if jscolorpath.endswith(".js"):
@@ -168,19 +169,6 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         else:
             self.send_response(404)        
 
-    def get_colors(self,querydict):
-        new_colors = querydict["col"]
-        print new_colors
-        #TODO filter out bad results, exact length = 6
-
-        return new_colors
-    
-    def get_iteration(self,querydict):
-	new_iteration = int(querydict["iter"][0])
-        #regExp = re.compile("[0-9]{1,2}")
-        #new_iteration = string.atoi(regExp.findall(iterationstring)[0]) 
-	#TODO filter bad results
-        return new_iteration
 
     def get_borderlines(self,querydict):
 	new_borderlines = [0.0 for x in range(4)]

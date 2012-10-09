@@ -1,4 +1,4 @@
-import math, coloralg
+import math,re, coloralg
 #TODO: put class in new file, find name, find the big picture, comment pydoc, comment variables, is it a module?
 class ImageAdministrator():
     """
@@ -23,6 +23,28 @@ class ImageAdministrator():
 	self.coloralg = colorAlg
         colorAlg.initcolorscheme(self.colorscheme[1:len(self.colorscheme)])
 
+    def isIterationInputValid(self,iterationString):
+	regExpOnlyNumbers = re.compile("^[1-9]{1}[0-9]{0,3}$")
+	if (regExpOnlyNumbers.match(iterationString) == None):
+	    return False
+	else: 
+	    return True
+
+    def isSizeInputValid(self,sizeString):
+	regExpOnlyNumbers = re.compile("^[1-9]{1}[0-9]{0,5}$")
+	if (regExpOnlyNumbers.match(sizeString) == None):
+	    return False
+	else:
+	    return True
+
+    def isColorInputValid(self,colorsString):
+	regExpOnlyHex = re.compile("^([0-9a-fA-F]{3}){1,2}$")
+	for color in colorsString: 
+	    if (regExpOnlyHex.match(color)== None):
+		return False
+	    else:
+		pass
+	return True
 
     def change_imagesize(self,new_width, new_height):
         """
