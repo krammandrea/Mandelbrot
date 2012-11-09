@@ -130,7 +130,6 @@
 #change_size{	
     display:none;
     }
-
 #color_pickers{	
     display:none;
     }
@@ -173,6 +172,7 @@
 	display:block;
 	size:5em;
 	}
+
 .dropDownContent{   
 	z-index:2;
 	}

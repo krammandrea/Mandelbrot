@@ -29,6 +29,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         #extract the requested url path and strip the first "/" for later use with open()
         url_path = string.lstrip(urlparse.urlparse(self.path).path,"/")
 
+
 	if "index.html" in url_path:
 	    mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())	
 	    self.get_main_page()
@@ -46,39 +47,6 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         elif ".js"in url_path:
             self.get_javascript(url_path)
 
-        elif "change_color" in url_path:
-	    if(self.imageAdministrator.isColorInputValid(query['col'])):
-		self.imageAdministrator.change_colorscheme(query['col'])
-		self.colorAlg.initcolorscheme(query['col'][1:len(query['col'])])
-		mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())	
-	    else:
-		pass #TODO put useralert on mainpage
-	    self.get_main_page()
-
-        elif "change_iteration" in url_path:
-	    iterationString = query["iter"][0]
-	    if self.imageAdministrator.isIterationInputValid(iterationString):
-		self.imageAdministrator.change_maxiteration(int(iterationString))
-		mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())	
-	    else:
-		pass	#TODO put useralert on mainpage
-	    self.get_main_page()
-
-        elif "change_size" in url_path:
-	    if (self.imageAdministrator.isSizeInputValid(query['pxwidth'][0]) and 
-		self.imageAdministrator.isSizeInputValid(query['pxheight'][0])):
-		self.imageAdministrator.change_imagesize(int(query['pxwidth'][0]),int(query['pxheight'][0]))
-		mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())	
-	    else:
-		pass	#TODO put useralert on mainpage
-	    self.get_main_page()
-		
-        elif "section" in url_path:
-            new_borderlines = self.get_borderlines(query)
-            self.imageAdministrator.change_section(new_borderlines)
-            mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
-            self.get_main_page()
-
 	elif 'zoom_offset' in url_path:
 	    """
 	    when clicking into the image the new image will be calculated centered 
@@ -88,6 +56,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	    self.imageAdministrator.change_offset_and_zoom(new_x,new_y,self.ZOOM_ON_CLICK)
 	    mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())	
 	    self.get_main_page()   
+
 
 	    """
 	    when clicking on arrow buttons the new image section will move to the 
@@ -131,6 +100,54 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	elif "save" in url_path:
             self.download_fractal_param_dat()
 
+	    """
+	    any written user input (form or file) will be checked for allowed characters
+	    and allowed range
+	    """
+        elif "change_color" in url_path:
+	    if(self.imageAdministrator.isColorInputValid(query['col'])):
+		self.imageAdministrator.change_colorscheme(query['col'])
+		self.colorAlg.initcolorscheme(query['col'][1:len(query['col'])])
+		mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
+	    else:
+		pass #TODO put useralert on mainpage
+	    self.get_main_page()
+
+        elif "change_iteration" in url_path:
+	    iterationString = query["iter"][0]
+	    if self.imageAdministrator.isIterationInputValid(iterationString):
+		self.imageAdministrator.change_maxiteration(int(iterationString))
+		mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())  
+	    else:
+		pass	#TODO put useralert on mainpage
+	    self.get_main_page()
+
+        elif "change_size" in url_path:
+	    if (self.imageAdministrator.isSizeInputValid(query['pxwidth'][0]) and 
+		self.imageAdministrator.isSizeInputValid(query['pxheight'][0])):
+		self.imageAdministrator.change_imagesize(int(query['pxwidth'][0]),
+							 int(query['pxheight'][0]))
+		mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
+	    else:
+		pass	#TODO put useralert on mainpage
+	    self.get_main_page()
+		
+        elif "section" in url_path:
+		
+	    if (self.imageAdministrator.isBorderInputValid(query['xs'][0]) and
+	        self.imageAdministrator.isBorderInputValid(query['xe'][0]) and
+	        self.imageAdministrator.isBorderInputValid(query['ys'][0]) and
+	        self.imageAdministrator.isBorderInputValid(query['ye'][0])):
+		self.imageAdministrator.change_section([float(query)['xs'][0],
+							float(query)['xe'][0],
+							float(query)['ys'][0],
+							float(query)['ye'][0]])
+                mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
+	    else:
+		pass #TODO put useralert on mainpage
+            self.get_main_page()
+
+
 	else:
 	    self.send_response(404, "not in alternative list")
 
@@ -170,16 +187,6 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_response(404)        
 
 
-    def get_borderlines(self,querydict):
-	new_borderlines = [0.0 for x in range(4)]
-	new_borderlines[0] = float(querydict["xs"][0])
-	new_borderlines[1] = float(querydict["xe"][0])
-	new_borderlines[2] = float(querydict["ys"][0])
-	new_borderlines[3] = float(querydict["ye"][0])
-#        regExp = re.compile("(-?[0-9]+\.?[0-9]*)")
-#        new_borderlines = [float(corner) for corner in regExp.findall(sectionstring)]
-
-        return new_borderlines
 
 #TODO else only after imagename not existent 
     def get_image(self,imagepath):
@@ -222,7 +229,8 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	extract new center of image after the user click out of the url
 	"""	
 	number = re.compile(r"([0-9]+)")
-	if number.match(querydict["zoom_offset.x"][0]) is None or number.match(querydict["zoom_offset.y"][0]) is None:
+	if (number.match(querydict["zoom_offset.x"][0]) is None or 
+	    number.match(querydict["zoom_offset.y"][0]) is None):
 	    self.send_response(400, "offset out of range")
 	#TODO what happens after a 400?    
 	else:

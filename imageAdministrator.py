@@ -46,6 +46,13 @@ class ImageAdministrator():
 		pass
 	return True
 
+    def isBorderInputValid(self,borderLineString):
+	regExpOnlyFloat = re.compile("^(-?[0-9]+\.?[0-9]*)$")
+	if regExpOnlyFloat.match(borderLineString) == None:
+	    return False
+	else:
+	    return True
+
     def change_imagesize(self,new_width, new_height):
         """
         adjust the pixelsize of the image and adjust the new x/yabsolutestart/end 
