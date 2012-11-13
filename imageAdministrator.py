@@ -1,4 +1,6 @@
-import math,re, coloralg
+import math,re, os, coloralg
+import xml.etree.cElementTree as ET
+
 #TODO: put class in new file, find name, find the big picture, comment pydoc, comment variables, is it a module?
 class ImageAdministrator():
     """
@@ -22,7 +24,41 @@ class ImageAdministrator():
 	self.colorscheme = self.PURPLEGREEN	
 	self.coloralg = colorAlg
         colorAlg.initcolorscheme(self.colorscheme[1:len(self.colorscheme)])
+    
+    def write_parameters_to_xml(self,xmlFileName):
+        #check if file already exist, if not create and add root
+        xmlFile = open (xmlFileName,'a')
+        
+        if (os.path.getsize(xmlFileName)==0): #TODO try-catch?
+            #is empty
+            root = ET.Element('parameterSetList')        
+            #wrap in ElementTree instance
+            tree = ET.ElementTree(root)
+        else:
+            tree = ET.parse(xmlFileName)
+            root = tree.getroot()
 
+        
+        #add the current set of parameters to the file
+        currentParaSet = ET.SubElement(root, 'parameterSet')
+        
+        ET.SubElement(currentParaSet,'pxHeight').text       = str(self.height)
+        ET.SubElement(currentParaSet,'pxWidth').text        = str(self.width)
+        ET.SubElement(currentParaSet,'maxiteration').text   = str(self.maxiteration)
+        ET.SubElement(currentParaSet,'xAbsoluteStart').text = str(self.xabsolutestart)
+        ET.SubElement(currentParaSet,'xAbsoluteEnd').text   = str(self.xabsoluteend)
+        ET.SubElement(currentParaSet,'yAbsoluteStart').text = str(self.yabsolutestart)
+        ET.SubElement(currentParaSet,'yAbsoluteEnd').text   = str(self.yabsoluteend)
+        ET.SubElement(currentParaSet,'colorScheme').text    = str(self.colorscheme)
+
+        #save to file
+        tree.write(xmlFileName)
+
+    def load_parameters_from_xml(self):
+        #iterate over all the subElements in the tree
+#for parameterSet in root.iter('parameterSet')
+        pass 
+           
     def isIterationInputValid(self,iterationString):
 	regExpOnlyNumbers = re.compile("^[1-9]{1}[0-9]{0,3}$")
 	if (regExpOnlyNumbers.match(iterationString) == None):

@@ -4,7 +4,7 @@ import mandelbrot,coloralg,imageAdministrator
 
 HOST_NAME = '' # empty because using http://localhost
 PORT_NUMBER = 8080
-
+XMLFILENAME = 'parameterSets.xml'
 
 #TODO rename file, restructre if/else part and add comments what the user actions are 
 class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
@@ -217,11 +217,12 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.send_header("Content-type","application/x-download")
         self.send_header("Content-disposition","attachement; filename='filenametest'")
         self.end_headers()
-        
-        fractal_para=self.imageAdministrator.get_parameters()
-        fractal_para_str=repr(fractal_para)
 
-        self.wfile.write(fractal_para_str)
+        self.imageAdministrator.write_parameters_to_xml(XMLFILENAME)        
+#       fractal_para=self.imageAdministrator.get_parameters()
+#       fractal_para_str=repr(fractal_para)
+
+#        self.wfile.write(fractal_para_str)
 
 
     def get_new_coordinate(self,querydict):
