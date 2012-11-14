@@ -26,7 +26,9 @@ class ImageAdministrator():
         colorAlg.initcolorscheme(self.colorscheme[1:len(self.colorscheme)])
     
     def write_parameters_to_xml(self,xmlFileName):
-        #check if file already exist, if not create and add root
+        """
+        check if file already exist, if not create and add root
+        """
         xmlFile = open (xmlFileName,'a')
         
         if (os.path.getsize(xmlFileName)==0): #TODO try-catch?
@@ -44,7 +46,7 @@ class ImageAdministrator():
         
         ET.SubElement(currentParaSet,'pxHeight').text       = str(self.height)
         ET.SubElement(currentParaSet,'pxWidth').text        = str(self.width)
-        ET.SubElement(currentParaSet,'maxiteration').text   = str(self.maxiteration)
+        ET.SubElement(currentParaSet,'maxIteration').text   = str(self.maxiteration)
         ET.SubElement(currentParaSet,'xAbsoluteStart').text = str(self.xabsolutestart)
         ET.SubElement(currentParaSet,'xAbsoluteEnd').text   = str(self.xabsoluteend)
         ET.SubElement(currentParaSet,'yAbsoluteStart').text = str(self.yabsolutestart)
@@ -54,12 +56,46 @@ class ImageAdministrator():
         #save to file
         tree.write(xmlFileName)
 
-    def load_parameters_from_xml(self):
-        #iterate over all the subElements in the tree
-#for parameterSet in root.iter('parameterSet')
-        pass 
-           
+    def loadParametersFromXml(self,parameterSet):
+        #load parameters
+        pxHeight       = parameterSet.find('pxHeight').text
+        pxWidth        = parameterSet.find('pxWidth').text
+        maxIteration   = parameterSet.find('maxIteration').text
+        xAbsoluteStart = parameterSet.find('xAbsoluteStart').text
+        xAbsoluteEnd   = parameterSet.find('xAbsoluteEnd').text
+        yAbsoluteStart = parameterSet.find('yAbsoluteStart').text
+        yAbsoluteEnd   = parameterSet.find('yAbsoluteEnd').text
+        colorString    = parameterSet.find('colorScheme').text
+        #dirty conversion to list   
+        colorScheme    = colorString.rstrip("']").lstrip("['").split("', '")
+        #check validity
+        if (self.isSizeInputValid(pxHeight)         and
+            self.isSizeInputValid(pxWidth)          and
+            self.isIterationInputValid(maxIteration)and
+            self.isBorderInputValid(xAbsoluteStart) and
+            self.isBorderInputValid(xAbsoluteEnd)   and
+            self.isBorderInputValid(yAbsoluteStart) and
+            self.isBorderInputValid(yAbsoluteEnd)   and
+            self.isColorInputValid(colorScheme)):
+
+            #set attributes    
+            self.height         = int(pxHeight)      
+            self.width          = int(pxWidth)       
+            self.maxiteration   = int(maxIteration)  
+            self.xabsolutestart = float(xAbsoluteStart)
+            self.xabsoluteend   = float(xAbsoluteEnd)  
+            self.yabsolutestart = float(yAbsoluteStart)
+            self.yabsoluteend   = float(yAbsoluteEnd)  
+            self.colorscheme    = colorScheme   
+            return True
+        else:       
+            #parameters invalid 
+            return False
+
     def isIterationInputValid(self,iterationString):
+        """
+        values in between 1 and 9999 are valid
+        """
 	regExpOnlyNumbers = re.compile("^[1-9]{1}[0-9]{0,3}$")
 	if (regExpOnlyNumbers.match(iterationString) == None):
 	    return False
@@ -67,15 +103,21 @@ class ImageAdministrator():
 	    return True
 
     def isSizeInputValid(self,sizeString):
+        """
+        values in between 1 and 999999 are valid
+        """
 	regExpOnlyNumbers = re.compile("^[1-9]{1}[0-9]{0,5}$")
 	if (regExpOnlyNumbers.match(sizeString) == None):
 	    return False
 	else:
 	    return True
 
-    def isColorInputValid(self,colorsString):
+    def isColorInputValid(self,colorList):
+        """
+        3 or 6-digit hexnumbers are valid
+        """
 	regExpOnlyHex = re.compile("^([0-9a-fA-F]{3}){1,2}$")
-	for color in colorsString: 
+	for color in colorList: 
 	    if (regExpOnlyHex.match(color)== None):
 		return False
 	    else:
@@ -83,6 +125,9 @@ class ImageAdministrator():
 	return True
 
     def isBorderInputValid(self,borderLineString):
+        """
+        positive and negative floating point numbers are valid
+        """
 	regExpOnlyFloat = re.compile("^(-?[0-9]+\.?[0-9]*)$")
 	if regExpOnlyFloat.match(borderLineString) == None:
 	    return False
