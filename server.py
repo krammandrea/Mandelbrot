@@ -1,6 +1,6 @@
 import string,re,math,urlparse
 import BaseHTTPServer
-import mandelbrot,coloralg,imageAdministrator
+import mandelbrot,imageAdministrator
 
 HOST_NAME = '' # empty because using http://localhost
 PORT_NUMBER = 8080
@@ -19,7 +19,6 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
     def __init__(self,request, client_adress,server):
         self.imageAdministrator = server.imageAdministrator
-        self.colorAlg = server.colorAlg
         BaseHTTPServer.BaseHTTPRequestHandler.__init__(self,request,client_adress,server)
 
 
@@ -107,7 +106,6 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         elif "change_color" in url_path:
 	    if(self.imageAdministrator.isColorInputValid(query['col'])):
 		self.imageAdministrator.change_colorscheme(query['col'])
-		self.colorAlg.initcolorscheme(query['col'][1:len(query['col'])])
 		mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
 	    else:
 		pass #TODO put useralert on mainpage
@@ -251,8 +249,7 @@ if __name__ == '__main__':
     httpd = BaseHTTPServer.HTTPServer((HOST_NAME, PORT_NUMBER), MyHandler)
     #piggybacking imageadministrator into Myhandler instead of using it globally
     #idea: this could be a singleton pattern    
-    httpd.colorAlg = coloralg.ColorAlg()
-    httpd.imageAdministrator = imageAdministrator.ImageAdministrator(httpd.colorAlg)
+    httpd.imageAdministrator = imageAdministrator.ImageAdministrator()
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:

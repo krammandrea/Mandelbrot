@@ -13,7 +13,7 @@ class ImageAdministrator():
     PURPLEGREEN = ["55285E","4B2B52","451A4E","7B4686","7C4E86","A1A95F","A0A956","6B7326","747A3E","838C3D"]
 
 
-    def __init__(self, colorAlg):
+    def __init__(self):
 	self.height = 600
 	self.width = 600
 	self.maxiteration = 20
@@ -22,8 +22,8 @@ class ImageAdministrator():
         self.yabsolutestart = -2.0
         self.yabsoluteend = 2.0
 	self.colorscheme = self.PURPLEGREEN	
-	self.coloralg = colorAlg
-        colorAlg.initcolorscheme(self.colorscheme[1:len(self.colorscheme)])
+	self.coloralg = coloralg.ColorAlg()
+        self.coloralg.initcolorscheme(self.colorscheme[1:len(self.colorscheme)])
     
     def write_parameters_to_xml(self,xmlFileName):
         """
@@ -57,6 +57,10 @@ class ImageAdministrator():
         tree.write(xmlFileName)
 
     def loadParametersFromXml(self,parameterSet):
+        """
+        loads a set of parameters from xml, converts them and sets the 
+        classes attributes if all the values are valid
+        """
         #load parameters
         pxHeight       = parameterSet.find('pxHeight').text
         pxWidth        = parameterSet.find('pxWidth').text
@@ -91,6 +95,18 @@ class ImageAdministrator():
         else:       
             #parameters invalid 
             return False
+
+    def generateMasterPictureFromXml(self,xmlFileName):
+        """
+        generates a master picture using the given sections, being large 
+        enough to show them all and marking every section with a white rectangle 
+        """
+        #load parameterSets
+        #calculate the boundaries and add 5% on all sides for visibility
+        #which colorscheme to use?
+        #generate masterpictue
+        #mark every given section with a white line, using drawBorderLines
+        pass
 
     def isIterationInputValid(self,iterationString):
         """
@@ -228,6 +244,7 @@ class ImageAdministrator():
         """
         #TODO minimum number of colors
         self.colorscheme = new_colorscheme
+        self.coloralg.initcolorscheme(self.colorscheme[1:len(self.colorscheme)])
         print self.colorscheme, new_colorscheme
 
     def change_maxiteration(self,new_iteration):
