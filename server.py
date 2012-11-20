@@ -1,7 +1,7 @@
 import string,re,math,urlparse
 import BaseHTTPServer
-import mandelbrot,imageAdministrator
-
+import imageAdministrator
+#TODO replace mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters() with self.imageAdministrator.calculate_mandelbrot()
 HOST_NAME = '' # empty because using http://localhost
 PORT_NUMBER = 8080
 XMLFILENAME = 'parameterSets.xml'
@@ -30,11 +30,11 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
 
 	if "index.html" in url_path:
-	    mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())	
+	    self.imageAdministrator.calculate_mandelbrot()	
 	    self.get_main_page()
 
 	elif self.path.endswith("/"):
-	    mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())	
+	    self.imageAdministrator.calculate_mandelbrot()	
 	    self.get_main_page()
 #TODO only /images or /jscolor
 	elif ".png" in url_path or ".gif" in url_path:
@@ -53,7 +53,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	    """
 	    new_x,new_y = self.get_new_coordinate(query)
 	    self.imageAdministrator.change_offset_and_zoom(new_x,new_y,self.ZOOM_ON_CLICK)
-	    mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())	
+	    self.imageAdministrator.calculate_mandelbrot()	
 	    self.get_main_page()   
 
 
@@ -63,37 +63,37 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	    """
         elif 'offset_right' in url_path:
             self.imageAdministrator.change_offset(self.OFFSETFACTOR,0)
-            mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
+            self.imageAdministrator.calculate_mandelbrot()
             self.get_main_page() 
 
         elif 'offset_left' in url_path:
             self.imageAdministrator.change_offset(-self.OFFSETFACTOR,0)
-            mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
+            self.imageAdministrator.calculate_mandelbrot()
             self.get_main_page() 
 
         elif 'offset_up' in url_path:
             self.imageAdministrator.change_offset(0,-self.OFFSETFACTOR)
-            mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
+            self.imageAdministrator.calculate_mandelbrot()
             self.get_main_page() 
 
         elif 'offset_down' in url_path:
             self.imageAdministrator.change_offset(0,self.OFFSETFACTOR)
-            mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
+            self.imageAdministrator.calculate_mandelbrot()
             self.get_main_page() 
 
         elif 'zoom_in' in url_path:
             self.imageAdministrator.change_zoom(self.ZOOMRELATIVE)
-            mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
+            self.imageAdministrator.calculate_mandelbrot()
             self.get_main_page() 
 
         elif 'zoom_out' in url_path:
             self.imageAdministrator.change_zoom(1/self.ZOOMRELATIVE)
-            mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
+            self.imageAdministrator.calculate_mandelbrot()
             self.get_main_page() 
 
         elif 'zoom' in url_path:
             self.imageAdministrator.change_zoom(self.ZOOMRELATIVE)
-            mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
+            self.imageAdministrator.calculate_mandelbrot()
             self.get_main_page() 
 
 	elif "save" in url_path:
@@ -106,7 +106,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         elif "change_color" in url_path:
 	    if(self.imageAdministrator.isColorInputValid(query['col'])):
 		self.imageAdministrator.change_colorscheme(query['col'])
-		mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
+		self.imageAdministrator.calculate_mandelbrot()
 	    else:
 		pass #TODO put useralert on mainpage
 	    self.get_main_page()
@@ -115,7 +115,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	    iterationString = query["iter"][0]
 	    if self.imageAdministrator.isIterationInputValid(iterationString):
 		self.imageAdministrator.change_maxiteration(int(iterationString))
-		mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())  
+		self.imageAdministrator.calculate_mandelbrot()  
 	    else:
 		pass	#TODO put useralert on mainpage
 	    self.get_main_page()
@@ -125,7 +125,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 		self.imageAdministrator.isSizeInputValid(query['pxheight'][0])):
 		self.imageAdministrator.change_imagesize(int(query['pxwidth'][0]),
 							 int(query['pxheight'][0]))
-		mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
+		self.imageAdministrator.calculate_mandelbrot()
 	    else:
 		pass	#TODO put useralert on mainpage
 	    self.get_main_page()
@@ -140,7 +140,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 							float(query)['xe'][0],
 							float(query)['ys'][0],
 							float(query)['ye'][0]])
-                mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters())
+                self.imageAdministrator.calculate_mandelbrot()
 	    else:
 		pass #TODO put useralert on mainpage
             self.get_main_page()

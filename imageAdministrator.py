@@ -1,4 +1,5 @@
-import math,re, os, coloralg
+import math,re, os
+import mandelbrot, coloralg
 import xml.etree.cElementTree as ET
 
 #TODO: put class in new file, find name, find the big picture, comment pydoc, comment variables, is it a module?
@@ -24,6 +25,9 @@ class ImageAdministrator():
 	self.colorscheme = self.PURPLEGREEN	
 	self.coloralg = coloralg.ColorAlg()
         self.coloralg.initcolorscheme(self.colorscheme[1:len(self.colorscheme)])
+    
+    def calculate_mandelbrot(self):
+        mandelbrot.calculate_mandelbrot(*self.get_parameters())
     
     def write_parameters_to_xml(self,xmlFileName):
         """
