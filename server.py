@@ -1,6 +1,6 @@
 import string,re,math,urlparse
 import BaseHTTPServer
-import imageAdministrator
+import imageAdministrator, xmlAdministrator
 #TODO replace mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters() with self.imageAdministrator.calculate_mandelbrot()
 HOST_NAME = '' # empty because using http://localhost
 PORT_NUMBER = 8080
@@ -19,8 +19,8 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
     def __init__(self,request, client_adress,server):
         self.imageAdministrator = server.imageAdministrator
+        self.xmlAdministrator = server.xmlAdministrator
         BaseHTTPServer.BaseHTTPRequestHandler.__init__(self,request,client_adress,server)
-
 
 #TODO hash table for url path instead of if elif
     def do_GET(self):
@@ -216,7 +216,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.send_header("Content-disposition","attachement; filename='filenametest'")
         self.end_headers()
 
-        self.imageAdministrator.write_parameters_to_xml(XMLFILENAME)        
+        self.xmlAdministrator.write_parameters_to_xml(XMLFILENAME,self.imageAdministrator)        
 #       fractal_para=self.imageAdministrator.get_parameters()
 #       fractal_para_str=repr(fractal_para)
 
@@ -250,6 +250,7 @@ if __name__ == '__main__':
     #piggybacking imageadministrator into Myhandler instead of using it globally
     #idea: this could be a singleton pattern    
     httpd.imageAdministrator = imageAdministrator.ImageAdministrator()
+    httpd.xmlAdministrator = xmlAdministrator.XmlAdministrator(XMLFILENAME)
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:

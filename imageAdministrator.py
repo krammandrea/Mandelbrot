@@ -1,12 +1,13 @@
-import math,re, os
+import math,re
 import mandelbrot, coloralg
 import xml.etree.cElementTree as ET
 
 #TODO: put class in new file, find name, find the big picture, comment pydoc, comment variables, is it a module?
 class ImageAdministrator():
     """
-    stores the current parameters of the image which the user changes until he is 
-    satisfied and saves the image and the accompaning calculating data to file
+    stores the current parameters defining the image which the user changes 
+    until he is satisfied. Also checkes the validity of those parameters 
+    in string form
     """ 
     
     GREEN =["000000","336633","33664D","336666","334D66","333366","4D3366","663366","66334D","663333","664D33","666633","4D6633"]
@@ -29,24 +30,10 @@ class ImageAdministrator():
     def calculate_mandelbrot(self):
         mandelbrot.calculate_mandelbrot(*self.get_parameters())
     
-    def write_parameters_to_xml(self,xmlFileName):
+    def write_parameters_to_xml_tree(self,currentParaSet):
         """
-        check if file already exist, if not create and add root
+        adds one set of parameters to the given xml Element 
         """
-        xmlFile = open (xmlFileName,'a')
-        
-        if (os.path.getsize(xmlFileName)==0): #TODO try-catch?
-            #is empty
-            root = ET.Element('parameterSetList')        
-            #wrap in ElementTree instance
-            tree = ET.ElementTree(root)
-        else:
-            tree = ET.parse(xmlFileName)
-            root = tree.getroot()
-
-        
-        #add the current set of parameters to the file
-        currentParaSet = ET.SubElement(root, 'parameterSet')
         
         ET.SubElement(currentParaSet,'pxHeight').text       = str(self.height)
         ET.SubElement(currentParaSet,'pxWidth').text        = str(self.width)
@@ -57,8 +44,7 @@ class ImageAdministrator():
         ET.SubElement(currentParaSet,'yAbsoluteEnd').text   = str(self.yabsoluteend)
         ET.SubElement(currentParaSet,'colorScheme').text    = str(self.colorscheme)
 
-        #save to file
-        tree.write(xmlFileName)
+        return currentParaSet
 
     def loadParametersFromXml(self,parameterSet):
         """
