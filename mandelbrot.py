@@ -2,14 +2,15 @@ import math, Image, ImageDraw, ImageFilter, testing
 #TODO possible separation of saving and calculating the image, formatting input variables, adjust variablenames, how everything works together
 
 def calculate_mandelbrot(   colorAlg,
-			    imageheight=600,
+                            imageheight=600,
 			    imagewidth=600,
 			    maxiteration=10,
                             xabsolutestart= -2.0,
                             xabsoluteend=2.0,
                             yabsolutestart=-2.0,
                             yabsoluteend=2.0,
-                            colorscheme=["000000","338822","883388"]):
+                            colorscheme=["000000","338822","883388"],
+                            saveFileName="images/Mandelbrot.png"):
     """ 
     generates a mandelbrot fractal image and is saved as .png
 
@@ -19,12 +20,14 @@ def calculate_mandelbrot(   colorAlg,
         imagewidth:     pixelsize of the image to be calculated
         maxiteration:   directly correlated to the duration of the calculation
         absolutestart, 
-        absoluteend:    the cornerpoints of the section of the image to be calculated                        in the complex plane 
+        absoluteend:    the cornerpoints of the section of the image to be calculated
+                        in the complex plane 
         colorscheme:    the cornerpoints of the continous, colorscheme
                         minimum number of elements should be 3, the first color
                         depicts the nonescaping pixels(default = black) 
                         input according to ImageDraw as hexstring 
                         for example "#D3D3D3"
+        saveFileName:   image is saved under that name and location
     """
     #test_minmax = testing.Test_Minmaxvalue(maxiteration)
     print "calculating mandelbrot"
@@ -67,6 +70,6 @@ def calculate_mandelbrot(   colorAlg,
     	    draw.point((x,y),fill=formattedcolor)
     
     # save picture            
-    image.save("images/Mandelbrot.png","PNG")
+    image.save(saveFileName,"PNG")
     
     #test_minmax.print_minmax()

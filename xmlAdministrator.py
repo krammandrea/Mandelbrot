@@ -2,7 +2,7 @@ import xml.etree.cElementTree as ET
 import os
 import imageAdministrator
 
-class multiImagesAdministrator():
+class XmlAdministrator():
     """
     manages multiple images imported from xml file
     imports and exports the parameters used in imageAdministrator from and to
@@ -31,6 +31,7 @@ class multiImagesAdministrator():
         generates a master picture using the given sections, being large 
         enough to show them all and marking every section with a white rectangle 
         """
+        #
         #load parameterSets and write all the boundaries into a list
         #calculate the boundaries and add 5% on all sides for visibility
         #masterPicture.calculate_boundaries(xStartList,xEndList,yStartList,yEndList)

@@ -27,8 +27,11 @@ class ImageAdministrator():
 	self.coloralg = coloralg.ColorAlg()
         self.coloralg.initcolorscheme(self.colorscheme[1:len(self.colorscheme)])
     
-    def calculate_mandelbrot(self):
-        mandelbrot.calculate_mandelbrot(*self.get_parameters())
+    def calculate_mandelbrot(self,saveFileName):
+        if (saveFileName == None):
+            #TODO generate fileName
+            saveFileName="images/Mandelbrot.png"
+        mandelbrot.calculate_mandelbrot(self.coloralg,self.height, self.width, self.maxiteration, self.xabsolutestart, self.xabsoluteend, self.yabsolutestart, self.yabsoluteend, self.colorscheme,  saveFileName)
     
     def write_parameters_to_xml_tree(self,currentParaSet):
         """
@@ -86,17 +89,6 @@ class ImageAdministrator():
             #parameters invalid 
             return False
 
-    def generateMasterPictureFromXml(self,xmlFileName):
-        """
-        generates a master picture using the given sections, being large 
-        enough to show them all and marking every section with a white rectangle 
-        """
-        #load parameterSets
-        #calculate the boundaries and add 5% on all sides for visibility
-        #which colorscheme to use?
-        #generate masterpictue
-        #mark every given section with a white line, using drawBorderLines
-        pass
 
     def isIterationInputValid(self,iterationString):
         """
@@ -245,9 +237,3 @@ class ImageAdministrator():
 	self.maxiteration = new_iteration
 
 
-    def get_parameters(self):
-	return self.coloralg, self.height, self.width, self.maxiteration, self.xabsolutestart, self.xabsoluteend, self.yabsolutestart, self.yabsoluteend, self.colorscheme
-        
-
-    def save_parameters_to_file(self):
-	pass

@@ -1,10 +1,11 @@
 import string,re,urlparse
 import BaseHTTPServer
 import imageAdministrator, xmlAdministrator
-#TODO replace mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters() with self.imageAdministrator.calculate_mandelbrot()
+#TODO replace mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters() with self.imageAdministrator.calculate_mandelbrot(MBIMAGEFILENAME)
 HOST_NAME = '' # empty because using http://localhost
 PORT_NUMBER = 8080
 XMLFILENAME = 'parameterSets.xml'
+MBIMAGEFILENAME = 'images/Mandelbrot.png'
 
 #TODO rename file, restructre if/else part and add comments what the user actions are 
 class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
@@ -30,11 +31,11 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
 
 	if "index.html" in url_path:
-	    self.imageAdministrator.calculate_mandelbrot()	
+	    self.imageAdministrator.calculate_mandelbrot(MBIMAGEFILENAME)	
 	    self.get_main_page()
 
 	elif self.path.endswith("/"):
-	    self.imageAdministrator.calculate_mandelbrot()	
+	    self.imageAdministrator.calculate_mandelbrot(MBIMAGEFILENAME)	
 	    self.get_main_page()
 #TODO only /images or /jscolor
 	elif ".png" in url_path or ".gif" in url_path:
@@ -53,7 +54,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	    """
 	    new_x,new_y = self.get_new_coordinate(query)
 	    self.imageAdministrator.change_offset_and_zoom(new_x,new_y,self.ZOOM_ON_CLICK)
-	    self.imageAdministrator.calculate_mandelbrot()	
+	    self.imageAdministrator.calculate_mandelbrot(MBIMAGEFILENAME)	
 	    self.get_main_page()   
 
 
@@ -63,37 +64,37 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	    """
         elif 'offset_right' in url_path:
             self.imageAdministrator.change_offset(self.OFFSETFACTOR,0)
-            self.imageAdministrator.calculate_mandelbrot()
+            self.imageAdministrator.calculate_mandelbrot(MBIMAGEFILENAME)
             self.get_main_page() 
 
         elif 'offset_left' in url_path:
             self.imageAdministrator.change_offset(-self.OFFSETFACTOR,0)
-            self.imageAdministrator.calculate_mandelbrot()
+            self.imageAdministrator.calculate_mandelbrot(MBIMAGEFILENAME)
             self.get_main_page() 
 
         elif 'offset_up' in url_path:
             self.imageAdministrator.change_offset(0,-self.OFFSETFACTOR)
-            self.imageAdministrator.calculate_mandelbrot()
+            self.imageAdministrator.calculate_mandelbrot(MBIMAGEFILENAME)
             self.get_main_page() 
 
         elif 'offset_down' in url_path:
             self.imageAdministrator.change_offset(0,self.OFFSETFACTOR)
-            self.imageAdministrator.calculate_mandelbrot()
+            self.imageAdministrator.calculate_mandelbrot(MBIMAGEFILENAME)
             self.get_main_page() 
 
         elif 'zoom_in' in url_path:
             self.imageAdministrator.change_zoom(self.ZOOMRELATIVE)
-            self.imageAdministrator.calculate_mandelbrot()
+            self.imageAdministrator.calculate_mandelbrot(MBIMAGEFILENAME)
             self.get_main_page() 
 
         elif 'zoom_out' in url_path:
             self.imageAdministrator.change_zoom(1/self.ZOOMRELATIVE)
-            self.imageAdministrator.calculate_mandelbrot()
+            self.imageAdministrator.calculate_mandelbrot(MBIMAGEFILENAME)
             self.get_main_page() 
 
         elif 'zoom' in url_path:
             self.imageAdministrator.change_zoom(self.ZOOMRELATIVE)
-            self.imageAdministrator.calculate_mandelbrot()
+            self.imageAdministrator.calculate_mandelbrot(MBIMAGEFILENAME)
             self.get_main_page() 
 
 	elif "save" in url_path:
@@ -106,7 +107,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         elif "change_color" in url_path:
 	    if(self.imageAdministrator.isColorInputValid(query['col'])):
 		self.imageAdministrator.change_colorscheme(query['col'])
-		self.imageAdministrator.calculate_mandelbrot()
+		self.imageAdministrator.calculate_mandelbrot(MBIMAGEFILENAME)
 	    else:
 		pass #TODO put useralert on mainpage
 	    self.get_main_page()
@@ -115,7 +116,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	    iterationString = query["iter"][0]
 	    if self.imageAdministrator.isIterationInputValid(iterationString):
 		self.imageAdministrator.change_maxiteration(int(iterationString))
-		self.imageAdministrator.calculate_mandelbrot()  
+		self.imageAdministrator.calculate_mandelbrot(MBIMAGEFILENAME)  
 	    else:
 		pass	#TODO put useralert on mainpage
 	    self.get_main_page()
@@ -125,7 +126,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 		self.imageAdministrator.isSizeInputValid(query['pxheight'][0])):
 		self.imageAdministrator.change_imagesize(int(query['pxwidth'][0]),
 							 int(query['pxheight'][0]))
-		self.imageAdministrator.calculate_mandelbrot()
+		self.imageAdministrator.calculate_mandelbrot(MBIMAGEFILENAME)
 	    else:
 		pass	#TODO put useralert on mainpage
 	    self.get_main_page()
@@ -140,7 +141,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 							float(query)['xe'][0],
 							float(query)['ys'][0],
 							float(query)['ye'][0]])
-                self.imageAdministrator.calculate_mandelbrot()
+                self.imageAdministrator.calculate_mandelbrot(MBIMAGEFILENAME)
 	    else:
 		pass #TODO put useralert on mainpage
             self.get_main_page()
@@ -218,6 +219,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
         self.xmlAdministrator.write_parameters_to_xml(XMLFILENAME,self.imageAdministrator)        
 #       fractal_para=self.imageAdministrator.get_parameters()
+#TODO get_parameters decrepict
 #       fractal_para_str=repr(fractal_para)
 
 #        self.wfile.write(fractal_para_str)
