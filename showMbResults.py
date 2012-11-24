@@ -1,8 +1,15 @@
 import xml.etree.ElementTree as ET
-import imageAdministrator,coloralg,argparse
+import imageAdministrator,argparse,
+
+#default size in pixel for a square thumbnail image
+THUMBNAILSIZE = 200; 
 
 
 if __name__ =='__main__':
+"""
+generate more readable html out of the parameterSets saved as xml, with the option
+of generating thumbnails, masterImages and large scale images
+"""
 #initalize imageAdministrator colorAlg
     #?
     parser = argparse.ArgumentParser()
@@ -20,40 +27,28 @@ if __name__ =='__main__':
     args = parser.parse_args()
     print args
 
-#load xmlFile to imageAdministrator
+#write html file outline
+#format xml to html table
+#start new folder in same directory to save all the newly generated pictures and 
+#html there, as well as an xml-file with the new parameters
 
 #option --showThumbnails
-#change size to 200x200 and generate new images
+#multiImageAdministrator.regenerate_image_with(THUMBNAILSIZE,THUMBNAILSIZE,None,None,filename)
+#add images to the html table
 
 #option --showMasterImage
-#send all to generateMasterImage
+#multiImageAdministrator.generate_master_image(filename)
+#takes colorscheme and iteration of the first image on file
+#add to html
 
 #option --changePixelSize
+#multiImageAdministrator.regenerate_image_with(givenWidth,givenHeight,None,None,filename)
 #change pxSize to desired size and generate new images
 
 #option --changeIterations
+#multiImageAdministrator.regenerate_image_with(None,None,newIteration,None,filename)
 #change number of iterations and generate new images
 
 #generate a html page showing the parameters in the given file as well as the 
 #generated images and save everything(xml, thumbnails, masterimage, large images,html) in a folder
 #name: xmlFile+ThumbNail+Number
-
-    """
-    self.colorAlg = coloralg.ColorAlg()
-    try:
-        tree = ET.parse(xmlFileName)
-        root = tree.getroot()
-
-    except: 
-        #no xml-data in file or file nonexistent
-        print "No xml-data in "+xmlFileName
-        
-    #create thumbnails
-    for parameterSet in root.iter('parameterSet'):
-        #TODO if loading succesful
-        if (self.colorAlg.loadParametersFromXml(parameterSet)):
-            #overwrite pxsize with thumbnailsize
-            #save in file
-        else:
-            print "Parameters imported from "+xmlFileName+" are invalid."
-"""

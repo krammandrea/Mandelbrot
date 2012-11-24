@@ -5,9 +5,9 @@ import xml.etree.cElementTree as ET
 #TODO: put class in new file, find name, find the big picture, comment pydoc, comment variables, is it a module?
 class ImageAdministrator():
     """
-    stores the current parameters defining the image which the user changes 
+    stores the current parameters defining one image which the user changes 
     until he is satisfied. Also checkes the validity of those parameters 
-    in string form
+    in string form.
     """ 
     
     GREEN =["000000","336633","33664D","336666","334D66","333366","4D3366","663366","66334D","663333","664D33","666633","4D6633"]
