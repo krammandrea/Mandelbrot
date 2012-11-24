@@ -1,4 +1,4 @@
-import string,re,math,urlparse
+import string,re,urlparse
 import BaseHTTPServer
 import imageAdministrator, xmlAdministrator
 #TODO replace mandelbrot.calculate_mandelbrot(*self.imageAdministrator.get_parameters() with self.imageAdministrator.calculate_mandelbrot()
