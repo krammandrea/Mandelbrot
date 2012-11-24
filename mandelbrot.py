@@ -1,5 +1,5 @@
 import math, Image, ImageDraw, ImageFilter, testing
-#TODO pydoc commentary, possible separation of saving and calculating the image, formatting input variables, adjust variablenames, how everything works together
+#TODO possible separation of saving and calculating the image, formatting input variables, adjust variablenames, how everything works together
 
 def calculate_mandelbrot(   colorAlg,
 			    imageheight=600,
@@ -11,21 +11,24 @@ def calculate_mandelbrot(   colorAlg,
                             yabsoluteend=2.0,
                             colorscheme=["000000","338822","883388"]):
     """ 
-    colorAlg:       choice of a coloring algorithm and the colorschemes
-    imageheight,
-    imagewidth:     pixelsize of the image to be calculated
-    maxiteration:   directly correlated to the duration of the calculation
-    absolutestart, 
-    absoluteend:    the cornerpoints of the section of the image to be calculated 
-                    in the complex plane 
-    colorscheme:    the cornerpoints of the continous, colorscheme
-                    minimum number of elements should be 3, the first color
-                    depicts the nonescaping pixels(default = black) 
-                    input according to ImageDraw as hexstring for example "#FFFFFF"
+    generates a mandelbrot fractal image and is saved as .png
+
+    Arguments:
+        colorAlg:       choice of a coloring algorithm and the colorschemes
+        imageheight,
+        imagewidth:     pixelsize of the image to be calculated
+        maxiteration:   directly correlated to the duration of the calculation
+        absolutestart, 
+        absoluteend:    the cornerpoints of the section of the image to be calculated                        in the complex plane 
+        colorscheme:    the cornerpoints of the continous, colorscheme
+                        minimum number of elements should be 3, the first color
+                        depicts the nonescaping pixels(default = black) 
+                        input according to ImageDraw as hexstring 
+                        for example "#D3D3D3"
     """
     #test_minmax = testing.Test_Minmaxvalue(maxiteration)
     print "calculating mandelbrot"
-
+    
     # create new image file
     image = Image.new("RGB", (imagewidth,imageheight))
     draw = ImageDraw.Draw(image)
