@@ -1,4 +1,4 @@
-import math,re
+import math,re,hash64
 import mandelbrot, coloralg
 import xml.etree.cElementTree as ET
 
@@ -28,11 +28,15 @@ class ImageAdministrator():
         self.coloralg.initcolorscheme(self.colorscheme[1:len(self.colorscheme)])
     
     def calculate_mandelbrot(self,saveFileName):
+        """
+        calculates mandelbrot with the current parameterset 
+        """
         if (saveFileName == None):
             #TODO generate fileName
             saveFileName="images/Mandelbrot.png"
         mandelbrot.calculate_mandelbrot(self.coloralg,self.height, self.width, self.maxiteration, self.xabsolutestart, self.xabsoluteend, self.yabsolutestart, self.yabsoluteend, self.colorscheme,  saveFileName)
     
+        
     def write_parameters_to_xml_tree(self,currentParaSet):
         """
         adds one set of parameters to the given xml Element 
@@ -49,7 +53,7 @@ class ImageAdministrator():
 
         return currentParaSet
 
-    def loadParametersFromXml(self,parameterSet):
+    def load_parameters_from_xml(self,parameterSet):
         """
         loads a set of parameters from xml, converts them and sets the 
         classes attributes if all the values are valid
@@ -83,11 +87,28 @@ class ImageAdministrator():
             self.xabsoluteend   = float(xAbsoluteEnd)  
             self.yabsolutestart = float(yAbsoluteStart)
             self.yabsoluteend   = float(yAbsoluteEnd)  
-            self.colorscheme    = colorScheme   
+            self.change_colorscheme(colorScheme)   
             return True
         else:       
             #parameters invalid 
             return False
+
+    def generate_hashSum(self):
+        """
+        generates  8 base64-characters  hashvalue out of the 
+        current borderlines and colors
+        """ 
+        #input string using the borderlines and colors
+        accuBorderString =   str(self.xabsolutestart)+str(self.xabsoluteend)+str(self.yabsolutestart)+str(self.yabsoluteend)+str(self.colorscheme)
+        #random number to avoid multiplikation with 0
+        hashSum = 7
+        #convert to binaries, shake it a lot  and shorten to 48bit
+        for char in accuBorderString:
+            hashSum = ((ord(char)+17)*checksum)%0xffffffffffff
+        #convert to 6 ascii-characters (6x8bit=48bit) 
+        hashSumAsString = chr((hashSum&0xff0000000000)>>40)+chr((checksum&0x00ff00000000)>>32)+chr((checksum&0x0000ff000000)>>24)+chr((checksum&0x000000ff0000)>>16)+chr((checksum&0x00000000ff00)>>8)+chr((checksum&0x0000000000ff))
+        #convert to 8 base64-characters (8x6bit=48bit)
+        return base64.b64encode(hashSumAsString)    
 
 
     def isIterationInputValid(self,iterationString):
@@ -227,7 +248,7 @@ class ImageAdministrator():
         #TODO minimum number of colors
         self.colorscheme = new_colorscheme
         self.coloralg.initcolorscheme(self.colorscheme[1:len(self.colorscheme)])
-        print self.colorscheme, new_colorscheme
+        print "new colorscheme initiated "+str(self.colorscheme)
 
     def change_maxiteration(self,new_iteration):
         """
