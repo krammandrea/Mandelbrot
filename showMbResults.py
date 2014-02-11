@@ -1,17 +1,24 @@
 import xml.etree.ElementTree as ET
-import imageAdministrator,argparse,
+import imageAdministrator,argparse, xmlAdministrator
+#TODO imageAdmin noetig?
 
 #default size in pixel for a square thumbnail image
 THUMBNAILSIZE = 200; 
 
 
 if __name__ =='__main__':
-"""
-generate more readable html out of the parameterSets saved as xml, with the option
-of generating thumbnails, masterImages and large scale images
-"""
-#initalize imageAdministrator colorAlg
-    #?
+    """
+    generate more readable html out of the parameterSets saved as xml, with the option
+    of generating thumbnails, masterImages and large scale images
+    """
+    #initalize imageAdministrator colorAlg
+    currentSet = xmlAdministrator.XmlAdministrator("parameterSets.xml")
+    currentSet.recalculate_images_with( newWidth = str(400),
+                                        newHeight = str(400),
+                                        newIteration = None,
+                                        newColors = None,
+                                        xmlFileName = "parameterSets.xml")
+
     parser = argparse.ArgumentParser()
     parser.add_argument("xmlFileName", type = file,
                     help ="show the accumulated parameters in a html overview")
@@ -27,13 +34,14 @@ of generating thumbnails, masterImages and large scale images
     args = parser.parse_args()
     print args
 
+#TODO
 #write html file outline
 #format xml to html table
 #start new folder in same directory to save all the newly generated pictures and 
 #html there, as well as an xml-file with the new parameters
 
 #option --showThumbnails
-#multiImageAdministrator.regenerate_image_with(THUMBNAILSIZE,THUMBNAILSIZE,None,None,filename)
+#multiImageAdministrator.recalculate_images_with(THUMBNAILSIZE,THUMBNAILSIZE,None,None,filename)
 #add images to the html table
 
 #option --showMasterImage
@@ -42,11 +50,11 @@ of generating thumbnails, masterImages and large scale images
 #add to html
 
 #option --changePixelSize
-#multiImageAdministrator.regenerate_image_with(givenWidth,givenHeight,None,None,filename)
+#multiImageAdministrator.recalculate_images_with(givenWidth,givenHeight,None,None,filename)
 #change pxSize to desired size and generate new images
 
 #option --changeIterations
-#multiImageAdministrator.regenerate_image_with(None,None,newIteration,None,filename)
+#multiImageAdministrator.recalculate_images_with(None,None,newIteration,None,filename)
 #change number of iterations and generate new images
 
 #generate a html page showing the parameters in the given file as well as the 

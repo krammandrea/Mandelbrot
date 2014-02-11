@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+# For static files
+BASE = os.path.abspath(os.path.dirname(__name__))
+STATICFILES_DIRS = (os.path.join(BASE, "static"),)
+ADMIN_MEDIA_PREFIX = '/static/admin/'
+STATIC_URL = "/static/"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
@@ -23,6 +28,9 @@ SECRET_KEY = '_l(5cor-b)tek#z4=9z0bhc!+&^5n7qt=d^bpzb2d(3v^rp$co'
 DEBUG = True
 
 TEMPLATE_DEBUG = True
+TEMPLATE_DIRS = (
+'/Users/andreakramm/Pythonprojects/Mandelbrot/mandelbrot/navigate/templates', # Change this to your own directory.
+)
 
 ALLOWED_HOSTS = []
 
@@ -78,5 +86,4 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
-
 STATIC_URL = '/static/'
