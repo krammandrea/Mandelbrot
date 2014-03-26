@@ -44,6 +44,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Don't forget to add your app if you want your static files!!!!!
+    'navigate'
 )
 
 MIDDLEWARE_CLASSES = (

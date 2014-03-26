@@ -141,24 +141,24 @@
 	}
 
 #rotate_button{
-	background:no-repeat center url(../../../static/navigate/images/arrow_rotate.png),url(../../../static/navigate/images/greyddd.png) center;
+	background:no-repeat center url(images/arrow_rotate.png),url(images/greyddd.png) center;
 	float:left;
 	margin-top:3px;
 	width:20px;
 	}		
 
 .minus_button{
-	background: no-repeat url(../../../static/navigate/images/minus.png) center, url(../../../static/navigate/images/greyddd.png);
+	background: no-repeat url(images/minus.png) center, url(images/greyddd.png);
 	width:20px;
 	}
 
 .add_button{
-	background: no-repeat url(../../../static/navigate/images/add.png)center, url(../../../static/navigate/images/greyddd.png);
+	background: no-repeat url(images/add.png)center, url(images/greyddd.png);
 	width:20px;
 	}
 
 .remove_button{
-	background:url(../../../static/navigate/images/remove.png)center, url(../../../static/navigate/images/greyddd.png)center;
+	background:url(images/remove.png)center, url(images/greyddd.png)center;
 	width:20px;
 	}
 
