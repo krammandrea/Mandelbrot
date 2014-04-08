@@ -16,16 +16,16 @@ class ImageAdministrator():
 
 
     def __init__(self):
-	self.height = 600
-	self.width = 600
-	self.maxiteration = 20
-        self.xabsolutestart = -2.5
-        self.xabsoluteend = 1.5
-        self.yabsolutestart = -2.0
-        self.yabsoluteend = 2.0
-	self.colorscheme = self.PURPLEGREEN	
-	self.coloralg = coloralg.ColorAlg()
-        self.coloralg.initcolorscheme(self.colorscheme[1:len(self.colorscheme)])
+       self.height = 600
+       self.width = 600
+       self.maxiteration = 20
+       self.xabsolutestart = -2.5
+       self.xabsoluteend = 1.5
+       self.yabsolutestart = -2.0
+       self.yabsoluteend = 2.0
+       self.colorscheme = self.PURPLEGREEN	
+       self.coloralg = coloralg.ColorAlg()
+       self.coloralg.initcolorscheme(self.colorscheme[1:len(self.colorscheme)])
     
     def calculate_mandelbrot(self,saveFileName):
         """
@@ -115,43 +115,43 @@ class ImageAdministrator():
         """
         values in between 1 and 9999 are valid
         """
-	regExpOnlyNumbers = re.compile("^[1-9]{1}[0-9]{0,3}$")
-	if (regExpOnlyNumbers.match(iterationString) == None):
-	    return False
-	else: 
-	    return True
+        regExpOnlyNumbers = re.compile("^[1-9]{1}[0-9]{0,3}$")
+        if (regExpOnlyNumbers.match(iterationString) == None):
+            return False
+        else: 
+            return True
 
     def isSizeInputValid(self,sizeString):
         """
         values in between 1 and 999999 are valid
         """
-	regExpOnlyNumbers = re.compile("^[1-9]{1}[0-9]{0,5}$")
-	if (regExpOnlyNumbers.match(sizeString) == None):
-	    return False
-	else:
-	    return True
+        regExpOnlyNumbers = re.compile("^[1-9]{1}[0-9]{0,5}$")
+        if (regExpOnlyNumbers.match(sizeString) == None):
+           return False
+        else:
+           return True
 
     def isColorInputValid(self,colorList):
         """
         3 or 6-digit hexnumbers are valid
         """
-	regExpOnlyHex = re.compile("^([0-9a-fA-F]{3}){1,2}$")
-	for color in colorList: 
-	    if (regExpOnlyHex.match(color)== None):
-		return False
-	    else:
-		pass
-	return True
+        regExpOnlyHex = re.compile("^([0-9a-fA-F]{3}){1,2}$")
+        for color in colorList: 
+            if (regExpOnlyHex.match(color)== None):
+                return False
+            else:
+                pass
+                return True
 
     def isBorderInputValid(self,borderLineString):
         """
         positive and negative floating point numbers are valid
         """
-	regExpOnlyFloat = re.compile("^(-?[0-9]+\.?[0-9]*)$")
-	if regExpOnlyFloat.match(borderLineString) == None:
-	    return False
-	else:
-	    return True
+        regExpOnlyFloat = re.compile("^(-?[0-9]+\.?[0-9]*)$")
+        if regExpOnlyFloat.match(borderLineString) == None:
+            return False
+        else:
+            return True
 
     def change_imagesize(self,new_width, new_height):
         """
@@ -175,7 +175,7 @@ class ImageAdministrator():
 #TODO
 
     def reset_to_default(self):
-	pass
+        pass
 
 
     def change_section(self,new_borderlines):
@@ -218,8 +218,8 @@ class ImageAdministrator():
         xabsoluteoffset = xoffsetfactor*(self.xabsoluteend - self.xabsolutestart) 
         yabsoluteoffset = yoffsetfactor*(self.yabsoluteend - self.yabsolutestart) 
 
-	self.xabsolutestart += xabsoluteoffset
-	self.yabsolutestart += yabsoluteoffset
+        self.xabsolutestart += xabsoluteoffset
+        self.yabsolutestart += yabsoluteoffset
         self.xabsoluteend += xabsoluteoffset
         self.yabsoluteend += yabsoluteoffset       
 
@@ -233,8 +233,8 @@ class ImageAdministrator():
         xabsoluteoffset = (new_center_x - self.width/2)*(self.xabsoluteend - self.xabsolutestart)/self.width
         yabsoluteoffset = (new_center_y - self.height/2)*(self.yabsoluteend - self.yabsolutestart)/self.height
 
-	self.xabsolutestart += xabsoluteoffset
-	self.yabsolutestart += yabsoluteoffset
+        self.xabsolutestart += xabsoluteoffset
+        self.yabsolutestart += yabsoluteoffset
         self.xabsoluteend += xabsoluteoffset
         self.yabsoluteend += yabsoluteoffset       
 
@@ -255,6 +255,6 @@ class ImageAdministrator():
         change the number of maximum interations, a higher number gives a more detailed
         picture
         """
-	self.maxiteration = new_iteration
+        self.maxiteration = new_iteration
 
 
