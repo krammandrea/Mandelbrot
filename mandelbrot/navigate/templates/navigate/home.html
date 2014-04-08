@@ -15,8 +15,21 @@
 
 <!-- Mandelbrot image and corresponding offset arrows-->
     <div    id="der_nagel">
-
     <div    id="layer_image">
+
+
+    <form method="post">
+        <input type="image"    
+            name="zoom_offset"
+            src="{% static 'navigate/images/Mandelbrot.png'%}" 
+            title='click for zoom' 
+            alt='Mandelbrot' />
+<!-- use to avoid cross site request forgeries -->
+{% csrf_token %}
+</form>
+
+
+<!--  
         <form   action="zoom_offset" 
 
         method="get">
@@ -29,9 +42,8 @@
             opacity='0.8'
                 border="0"
             onsubmit="javascript:MBMAINHELPERS.calculatingImageEffect(document.getElementById('layer_image'),document.getElementById('progress_bar'))">
-            <!--TODO form submit cancels the effect-->
-        </form>
-    </div>
+                  </form>
+  -->   </div>
 
     <div    id="layer_navigation">
     <img
