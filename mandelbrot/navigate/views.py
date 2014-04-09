@@ -24,7 +24,7 @@ def redirectUsing(request, currImage):
     # change iteration depth
     # TODO do a validity check 
     currImage.change_offset_and_zoom(int(request.POST['zoom_offset.x']), int(request.POST['zoom_offset.y']))
-    return HttpResponseRedirect('/navigate/@%s,%s,z%s/%s/%s/i%s'%currImage.get_center())
+    return HttpResponseRedirect('/navigate/@%s,%s,z%s/%s/%s/i%s/c%s'%currImage.get_center())
 
 
 # List of views
@@ -34,7 +34,8 @@ def index(request):
 def home(request):
     """Shows the default image as starting point"""
     currImage = imageAdministrator.ImageAdministrator()
-    currImage.calculate_mandelbrot('/Users/andreakramm/Pythonprojects/Mandelbrot/mandelbrot/navigate/static/navigate/images/Mandelbrot.png')
+    # TODO change to generic file path, production? 
+    currImage.calculate_mandelbrot('/Users/demo/Desktop/mandelbrot/Mandelbrot/mandelbrot/navigate/static/navigate/images/Mandelbrot.png')
     if request.method == "POST":
         return redirectUsing(request, currImage)
     return generatePage(request)
@@ -43,15 +44,20 @@ def navigateTo(request, **imageParams):
     """Take the starting point parameters from the url, change them
         depending on the data from the post request"""
     print imageParams
+    # TODO validate url input
+    # move conversion from __init__ to validate_and_parse fcts
+    valParams = {}
+    valParams['colors'] = imageAdministrator.ImageAdministrator.validate_and_parse_colors(imageParams['colors'])
     currImage = imageAdministrator.ImageAdministrator(
             imageParams['xCoord'], 
             imageParams['yCoord'], 
             imageParams['zoom'], 
             imageParams['xSize'], 
             imageParams['ySize'], 
-            imageParams['iterations'])
+            imageParams['iterations'],
+            valParams['colors'])
     if request.method == "POST":
         return redirectUsing(request, currImage)
-    currImage.calculate_mandelbrot('/Users/andreakramm/Pythonprojects/Mandelbrot/mandelbrot/navigate/static/navigate/images/Mandelbrot.png')
+    currImage.calculate_mandelbrot('/Users/demo/Desktop/mandelbrot/Mandelbrot/mandelbrot/navigate/static/navigate/images/Mandelbrot.png')
     return generatePage(request)
 

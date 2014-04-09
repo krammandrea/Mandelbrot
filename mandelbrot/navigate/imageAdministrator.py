@@ -2,30 +2,29 @@ import math,re
 import algorithm, coloralg
 import xml.etree.cElementTree as ET
 
-#TODO: put class in new file, find name, find the big picture, comment pydoc, comment variables, is it a module?
+PURPLEGREEN = ["55285E","4B2B52","451A4E","7B4686","7C4E86","A1A95F","A0A956","6B7326","747A3E","838C3D"]
+GREEN =["000000","336633","33664D","336666","334D66","333366","4D3366","663366","66334D","663333","664D33","666633","4D6633"]
+BROWNBLUE = ["000000","FF9900","BF8630","A66300","FFB240","FFC773","689CD2","4188D2","04376C","26517C","0D58A6"]
+
+ZOOM_ON_CLICK = 2.0
+OFFSETFACTOR = 0.20 #image section moves by 20%    
+ZOOMRELATIVE = 2.0    
+
 class ImageAdministrator():
     """
-    stores the current parameters defining one image which the user changes 
+    Stores the current parameters defining one image which the user changes 
     until he is satisfied. Also checkes the validity of those parameters 
     in string form.
     """ 
-    
-    GREEN =["000000","336633","33664D","336666","334D66","333366","4D3366","663366","66334D","663333","664D33","666633","4D6633"]
-    BROWNBLUE = ["000000","FF9900","BF8630","A66300","FFB240","FFC773","689CD2","4188D2","04376C","26517C","0D58A6"]
-    PURPLEGREEN = ["55285E","4B2B52","451A4E","7B4686","7C4E86","A1A95F","A0A956","6B7326","747A3E","838C3D"]
 
-    ZOOM_ON_CLICK = 2.0
-    OFFSETFACTOR = 0.20 #image section moves by 20%    
-    ZOOMRELATIVE = 2.0    
-
-    def __init__(self, xCoord=-0.5, yCoord=0, zoom=1, xSize=400, ySize=400, iterations=6):
+    def __init__(self, xCoord=-0.5, yCoord=0, zoom=1, xSize=400, ySize=400, iterations=6, colors=PURPLEGREEN):
 
         (self.xabsolutestart, self.xabsoluteend, self.yabsolutestart, self.yabsoluteend) = \
             self.convert_offset_and_zoom_to_start_end(float(xCoord), float(yCoord), float(zoom))
         self.height = int(ySize)
         self.width = int(xSize)
         self.maxiteration = int(iterations)
-        self.colorscheme = self.PURPLEGREEN	
+        self.colorscheme = colors
         self.coloralg = coloralg.ColorAlg()
         self.coloralg.initcolorscheme(self.colorscheme[1:len(self.colorscheme)])
 
@@ -46,7 +45,11 @@ class ImageAdministrator():
         xS = self.width
         yS = self.height
         i = self.maxiteration
-        return (x,y,z, xS, yS, i)
+        c = ""
+        for col in self.colorscheme:
+            c += str(col) + ','
+        c = c[:-1]
+        return (x,y,z, xS, yS, i, c)
 
     def write_parameters_to_xml_tree(self,currentParaSet):
         """
@@ -120,6 +123,15 @@ class ImageAdministrator():
         hashSumAsString = chr((hashSum&0xff0000000000)>>40)+chr((checksum&0x00ff00000000)>>32)+chr((checksum&0x0000ff000000)>>24)+chr((checksum&0x000000ff0000)>>16)+chr((checksum&0x00000000ff00)>>8)+chr((checksum&0x0000000000ff))
         #convert to 8 base64-characters (8x6bit=48bit)
         return base64.b64encode(hashSumAsString)    
+
+    @classmethod
+    def validate_and_parse_colors(cls, colorString):
+        colorscheme = colorString.split(',')
+        for color in colorscheme:
+            c = int(color,16)
+            if c < 0 or c > 16777215:   # = 6 digit FFFFFF
+                raise Exception('Color %s out of range' %color)
+        return colorscheme 
 
 
     def isIterationInputValid(self,iterationString):
@@ -249,7 +261,7 @@ class ImageAdministrator():
         self.xabsoluteend += xabsoluteoffset
         self.yabsoluteend += yabsoluteoffset       
 
-        self.change_zoom(self.ZOOM_ON_CLICK)
+        self.change_zoom(ZOOM_ON_CLICK)
 
     def convert_offset_and_zoom_to_start_end(self, center_x, center_y, zoom):
         """Convert (center_x, center_y, zoom) to 
