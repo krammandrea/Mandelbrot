@@ -24,7 +24,7 @@ def redirectUsing(request, currImage):
     # change iteration depth
     # TODO do a validity check 
     currImage.change_offset_and_zoom(int(request.POST['zoom_offset.x']), int(request.POST['zoom_offset.y']))
-    return HttpResponseRedirect('/navigate/@%s,%s,z%s'%currImage.get_center())
+    return HttpResponseRedirect('/navigate/@%s,%s,z%s/%s/%s/i%s'%currImage.get_center())
 
 
 # List of views
@@ -42,7 +42,14 @@ def home(request):
 def navigateTo(request, **imageParams):
     """Take the starting point parameters from the url, change them
         depending on the data from the post request"""
-    currImage = imageAdministrator.ImageAdministrator(imageParams['xCoord'], imageParams['yCoord'], imageParams['zoom'])
+    print imageParams
+    currImage = imageAdministrator.ImageAdministrator(
+            imageParams['xCoord'], 
+            imageParams['yCoord'], 
+            imageParams['zoom'], 
+            imageParams['xSize'], 
+            imageParams['ySize'], 
+            imageParams['iterations'])
     if request.method == "POST":
         return redirectUsing(request, currImage)
     currImage.calculate_mandelbrot('/Users/andreakramm/Pythonprojects/Mandelbrot/mandelbrot/navigate/static/navigate/images/Mandelbrot.png')

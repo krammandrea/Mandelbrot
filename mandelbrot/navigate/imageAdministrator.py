@@ -18,13 +18,13 @@ class ImageAdministrator():
     OFFSETFACTOR = 0.20 #image section moves by 20%    
     ZOOMRELATIVE = 2.0    
 
-    def __init__(self, xCoord=-0.5, yCoord=0, zoom=1):
+    def __init__(self, xCoord=-0.5, yCoord=0, zoom=1, xSize=400, ySize=400, iterations=6):
 
         (self.xabsolutestart, self.xabsoluteend, self.yabsolutestart, self.yabsoluteend) = \
             self.convert_offset_and_zoom_to_start_end(float(xCoord), float(yCoord), float(zoom))
-        self.height = 400
-        self.width = 400
-        self.maxiteration = 6
+        self.height = int(ySize)
+        self.width = int(xSize)
+        self.maxiteration = int(iterations)
         self.colorscheme = self.PURPLEGREEN	
         self.coloralg = coloralg.ColorAlg()
         self.coloralg.initcolorscheme(self.colorscheme[1:len(self.colorscheme)])
@@ -43,7 +43,10 @@ class ImageAdministrator():
         x = self.xabsolutestart + (self.xabsoluteend - self.xabsolutestart)/2 
         y = self.yabsolutestart + (self.yabsoluteend - self.yabsolutestart)/2
         z = 4/(self.xabsoluteend - self.xabsolutestart)  # if zoom = 1, dist = 4
-        return (x,y,z)
+        xS = self.width
+        yS = self.height
+        i = self.maxiteration
+        return (x,y,z, xS, yS, i)
 
     def write_parameters_to_xml_tree(self,currentParaSet):
         """
