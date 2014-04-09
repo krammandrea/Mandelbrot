@@ -3,7 +3,7 @@ from navigate import views
 
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
-    url(r'^@(?P<xCoord>[0-9.]+),(?P<yCoord>[0-9.]+),z(?P<zoom>[0-9.]+)$', views.navigateTo, name='navigateTo'),
+    url(r'^@(?P<xCoord>[0-9.-]+),(?P<yCoord>[0-9.-]+),z(?P<zoom>[0-9.-]+)$', views.navigateTo, name='navigateTo'),
     url(r'^home/', views.home, name='home'),
 
 # TODO regex params from url and pass to navigateTo

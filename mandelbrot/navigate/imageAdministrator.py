@@ -21,7 +21,7 @@ class ImageAdministrator():
     def __init__(self, xCoord=-0.5, yCoord=0, zoom=1):
 
         (self.xabsolutestart, self.xabsoluteend, self.yabsolutestart, self.yabsoluteend) = \
-            self.convert_offset_and_zoom_to_start_end(float(xCoord), float(yCoord), int(zoom))
+            self.convert_offset_and_zoom_to_start_end(float(xCoord), float(yCoord), float(zoom))
         self.height = 400
         self.width = 400
         self.maxiteration = 6
@@ -39,6 +39,12 @@ class ImageAdministrator():
         algorithm.calculate_mandelbrot(self.coloralg,self.height, self.width, self.maxiteration, self.xabsolutestart, self.xabsoluteend, self.yabsolutestart, self.yabsoluteend, self.colorscheme,  saveFileName)
     
         
+    def get_center(self):
+        x = self.xabsolutestart + (self.xabsoluteend - self.xabsolutestart)/2 
+        y = self.yabsolutestart + (self.yabsoluteend - self.yabsolutestart)/2
+        z = 4/(self.xabsoluteend - self.xabsolutestart)  # if zoom = 1, dist = 4
+        return (x,y,z)
+
     def write_parameters_to_xml_tree(self,currentParaSet):
         """
         adds one set of parameters to the given xml Element 
