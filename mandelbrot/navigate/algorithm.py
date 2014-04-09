@@ -33,6 +33,7 @@ def calculate_mandelbrot(   colorAlg,
     """
     #test_minmax = testing.Test_Minmaxvalue(maxiteration)
     print "calculating mandelbrot"
+    print locals()
     
     # create new image file
     image = Image.new("RGB", (imagewidth,imageheight))

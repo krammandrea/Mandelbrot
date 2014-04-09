@@ -41,21 +41,17 @@ def home(request):
     return generatePage(request)
 
 def navigateTo(request, **imageParams):
-    """Take the starting point parameters from the url, change them
-        depending on the data from the post request"""
-    print imageParams
-    # TODO validate url input
-    # move conversion from __init__ to validate_and_parse fcts
-    valParams = {}
-    valParams['colors'] = imageAdministrator.ImageAdministrator.validate_and_parse_colors(imageParams['colors'])
+    """Take the starting point parameters from the url, validate and parse them, change them
+    depending on the data from the post request"""
+    valParams = imageAdministrator.ImageAdministrator.validate_and_parse_all_params(imageParams)
     currImage = imageAdministrator.ImageAdministrator(
-            imageParams['xCoord'], 
-            imageParams['yCoord'], 
-            imageParams['zoom'], 
-            imageParams['xSize'], 
-            imageParams['ySize'], 
-            imageParams['iterations'],
-            valParams['colors'])
+            xCoord = valParams['xCoord'], 
+            yCoord = valParams['yCoord'], 
+            zoom = valParams['zoom'], 
+            xSize = valParams['xSize'], 
+            ySize = valParams['ySize'], 
+            iterations = valParams['iterations'],
+            colors = valParams['colors'])
     if request.method == "POST":
         return redirectUsing(request, currImage)
     currImage.calculate_mandelbrot('/Users/demo/Desktop/mandelbrot/Mandelbrot/mandelbrot/navigate/static/navigate/images/Mandelbrot.png')

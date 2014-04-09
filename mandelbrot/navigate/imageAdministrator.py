@@ -20,10 +20,10 @@ class ImageAdministrator():
     def __init__(self, xCoord=-0.5, yCoord=0, zoom=1, xSize=400, ySize=400, iterations=6, colors=PURPLEGREEN):
 
         (self.xabsolutestart, self.xabsoluteend, self.yabsolutestart, self.yabsoluteend) = \
-            self.convert_offset_and_zoom_to_start_end(float(xCoord), float(yCoord), float(zoom))
-        self.height = int(ySize)
-        self.width = int(xSize)
-        self.maxiteration = int(iterations)
+            self.convert_offset_and_zoom_to_start_end(xCoord, yCoord, zoom)
+        self.height = ySize
+        self.width = xSize
+        self.maxiteration = iterations
         self.colorscheme = colors
         self.coloralg = coloralg.ColorAlg()
         self.coloralg.initcolorscheme(self.colorscheme[1:len(self.colorscheme)])
@@ -84,14 +84,14 @@ class ImageAdministrator():
         #dirty conversion to list   
         colorScheme    = colorString.rstrip("']").lstrip("['").split("', '")
         #check validity
-        if (self.isSizeInputValid(pxHeight)         and
-            self.isSizeInputValid(pxWidth)          and
-            self.isIterationInputValid(maxIteration)and
-            self.isBorderInputValid(xAbsoluteStart) and
-            self.isBorderInputValid(xAbsoluteEnd)   and
-            self.isBorderInputValid(yAbsoluteStart) and
-            self.isBorderInputValid(yAbsoluteEnd)   and
-            self.isColorInputValid(colorScheme)):
+        if (self.validate_and_parse_size(pxHeight)         and
+            self.validate_and_parse_size(pxWidth)          and
+            self.validate_and_parse_iteration(maxIteration)and
+            self.validate_and_parse_point(xAbsoluteStart) and
+            self.validate_and_parse_point(xAbsoluteEnd)   and
+            self.validate_and_parse_point(yAbsoluteStart) and
+            self.validate_and_parse_point(yAbsoluteEnd)   and
+            self.validate_and_parse_colors(colorScheme)):
 
             #set attributes    
             self.height         = int(pxHeight)      
@@ -125,6 +125,18 @@ class ImageAdministrator():
         return base64.b64encode(hashSumAsString)    
 
     @classmethod
+    def validate_and_parse_all_params(cls, imageParams):
+        valParams = {}
+        valParams['colors'] = ImageAdministrator.validate_and_parse_colors(imageParams['colors'])
+        valParams['iterations'] = ImageAdministrator.validate_and_parse_iterations(imageParams['iterations'])
+        valParams['xSize'] = ImageAdministrator.validate_and_parse_size(imageParams['xSize'])
+        valParams['ySize'] = ImageAdministrator.validate_and_parse_size(imageParams['ySize'])
+        valParams['zoom'] = ImageAdministrator.validate_and_parse_zoom(imageParams['zoom'])
+        valParams['xCoord'] = ImageAdministrator.validate_and_parse_point(imageParams['xCoord'])
+        valParams['yCoord'] = ImageAdministrator.validate_and_parse_point(imageParams['yCoord'])
+        return valParams
+
+    @classmethod
     def validate_and_parse_colors(cls, colorString):
         colorscheme = colorString.split(',')
         for color in colorscheme:
@@ -133,48 +145,47 @@ class ImageAdministrator():
                 raise Exception('Color %s out of range' %color)
         return colorscheme 
 
+    @classmethod
+    def validate_and_parse_iterations(cls, iterationsString):
+        """
+        Values in between 1 and 100 are valid
+        """
+        iterations = int(iterationsString)
+        if iterations < 1 or iterations > 100:
+            raise Exception('Iterations %s out of range.' %iterations)
+        return iterations
+         
+    @classmethod
+    def validate_and_parse_size(cls, sizeString):
+        """
+        values in between 1 and 10000 are valid
+        """
+        size = int(sizeString)
+        if size < 1 or size > 10000:
+            raise Exception('Size %s out of range.' %size)
+        return size 
 
-    def isIterationInputValid(self,iterationString):
-        """
-        values in between 1 and 9999 are valid
-        """
-        regExpOnlyNumbers = re.compile("^[1-9]{1}[0-9]{0,3}$")
-        if (regExpOnlyNumbers.match(iterationString) == None):
-            return False
-        else: 
-            return True
 
-    def isSizeInputValid(self,sizeString):
+    @classmethod
+    def validate_and_parse_point(cls, pointCoordString):
         """
-        values in between 1 and 999999 are valid
+        Positive and negative floating point numbers are valid. Mandelbrot fractals intersting
+        values are in range [-2,2] so restrict range to [-5, 5] 
         """
-        regExpOnlyNumbers = re.compile("^[1-9]{1}[0-9]{0,5}$")
-        if (regExpOnlyNumbers.match(sizeString) == None):
-           return False
-        else:
-           return True
-
-    def isColorInputValid(self,colorList):
+        pointCoord = float(pointCoordString)
+        if pointCoord < -5 or pointCoord > 5:
+            raise Exception('PointCoord %s out of range.' %pointCoord)
+        return pointCoord 
+        
+    @classmethod
+    def validate_and_parse_zoom(cls, zoomString):
         """
-        3 or 6-digit hexnumbers are valid
+        Zoomlevel goes from 1, showing the most zoomed out range up to 50 for zooming in
         """
-        regExpOnlyHex = re.compile("^([0-9a-fA-F]{3}){1,2}$")
-        for color in colorList: 
-            if (regExpOnlyHex.match(color)== None):
-                return False
-            else:
-                pass
-                return True
-
-    def isBorderInputValid(self,borderLineString):
-        """
-        positive and negative floating point numbers are valid
-        """
-        regExpOnlyFloat = re.compile("^(-?[0-9]+\.?[0-9]*)$")
-        if regExpOnlyFloat.match(borderLineString) == None:
-            return False
-        else:
-            return True
+        zoom = float(zoomString)
+        if zoom < 1 or zoom > 50:
+            raise Exception('Zoom %s out of range.' %zoom)
+        return zoom 
 
     def change_imagesize(self,new_width, new_height):
         """
