@@ -1,4 +1,5 @@
-import math, Image, ImageDraw, ImageFilter, testing
+import math, Image, ImageDraw, ImageFilter
+# import testing
 #TODO possible separation of saving and calculating the image, formatting input variables, adjust variablenames, how everything works together
 
 def calculate_mandelbrot(   colorAlg,
@@ -41,6 +42,7 @@ def calculate_mandelbrot(   colorAlg,
     iteration =0
     xCoord = range(imagewidth)
     yCoord = range(imageheight)
+    # TODO replace with matrix multiplication 
     for x in xCoord:
         for y in yCoord:
 	    iteration =0

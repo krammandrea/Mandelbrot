@@ -1,4 +1,5 @@
-import math,testing
+import math
+# import testing
 
 class ColorAlg():
  
@@ -26,8 +27,8 @@ class ColorAlg():
 	self.initcatmullrom()
 
         #show the current colorscheme
-        testing.test_catmullrom(self,colorscheme)
-        testing.test_straightconnection(self,colorscheme)
+        # testing.test_catmullrom(self,colorscheme)
+        # testing.test_straightconnection(self,colorscheme)
 
     def initcatmullrom(self):
         """

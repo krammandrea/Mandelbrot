@@ -1,5 +1,5 @@
-import math,re,hash64
-import mandelbrot, coloralg
+import math,re
+import algorithm, coloralg
 import xml.etree.cElementTree as ET
 
 #TODO: put class in new file, find name, find the big picture, comment pydoc, comment variables, is it a module?
@@ -14,27 +14,29 @@ class ImageAdministrator():
     BROWNBLUE = ["000000","FF9900","BF8630","A66300","FFB240","FFC773","689CD2","4188D2","04376C","26517C","0D58A6"]
     PURPLEGREEN = ["55285E","4B2B52","451A4E","7B4686","7C4E86","A1A95F","A0A956","6B7326","747A3E","838C3D"]
 
+    ZOOM_ON_CLICK = 2.0
+    OFFSETFACTOR = 0.20 #image section moves by 20%    
+    ZOOMRELATIVE = 2.0    
 
-    def __init__(self):
-       self.height = 600
-       self.width = 600
-       self.maxiteration = 20
-       self.xabsolutestart = -2.5
-       self.xabsoluteend = 1.5
-       self.yabsolutestart = -2.0
-       self.yabsoluteend = 2.0
-       self.colorscheme = self.PURPLEGREEN	
-       self.coloralg = coloralg.ColorAlg()
-       self.coloralg.initcolorscheme(self.colorscheme[1:len(self.colorscheme)])
-    
-    def calculate_mandelbrot(self,saveFileName):
+    def __init__(self, xCoord=-0.5, yCoord=0, zoom=1):
+
+        (self.xabsolutestart, self.xabsoluteend, self.yabsolutestart, self.yabsoluteend) = \
+            self.convert_offset_and_zoom_to_start_end(float(xCoord), float(yCoord), int(zoom))
+        self.height = 400
+        self.width = 400
+        self.maxiteration = 6
+        self.colorscheme = self.PURPLEGREEN	
+        self.coloralg = coloralg.ColorAlg()
+        self.coloralg.initcolorscheme(self.colorscheme[1:len(self.colorscheme)])
+
+    def calculate_mandelbrot(self, saveFileName):
         """
         calculates mandelbrot with the current parameterset 
         """
         if (saveFileName == None):
             #TODO generate fileName
             saveFileName="images/Mandelbrot.png"
-        mandelbrot.calculate_mandelbrot(self.coloralg,self.height, self.width, self.maxiteration, self.xabsolutestart, self.xabsoluteend, self.yabsolutestart, self.yabsoluteend, self.colorscheme,  saveFileName)
+        algorithm.calculate_mandelbrot(self.coloralg,self.height, self.width, self.maxiteration, self.xabsolutestart, self.xabsoluteend, self.yabsolutestart, self.yabsoluteend, self.colorscheme,  saveFileName)
     
         
     def write_parameters_to_xml_tree(self,currentParaSet):
@@ -224,11 +226,11 @@ class ImageAdministrator():
         self.yabsoluteend += yabsoluteoffset       
 
 
-    def change_offset_and_zoom(self, new_center_x, new_center_y,zoom_on_click):
+    def change_offset_and_zoom(self, new_center_x, new_center_y):
         """
         calculate offset in the pixelcoordinates then transform to the absolute 
         complex plane and calculate the new cornerpoints
-        zoom_on_click reduces the original size while the center stays the same
+        ZOOM_ON_CLICK reduces the original size while the center stays the same
         """ 
         xabsoluteoffset = (new_center_x - self.width/2)*(self.xabsoluteend - self.xabsolutestart)/self.width
         yabsoluteoffset = (new_center_y - self.height/2)*(self.yabsoluteend - self.yabsolutestart)/self.height
@@ -238,7 +240,17 @@ class ImageAdministrator():
         self.xabsoluteend += xabsoluteoffset
         self.yabsoluteend += yabsoluteoffset       
 
-        self.change_zoom(zoom_on_click)
+        self.change_zoom(self.ZOOM_ON_CLICK)
+
+    def convert_offset_and_zoom_to_start_end(self, center_x, center_y, zoom):
+        """Convert (center_x, center_y, zoom) to 
+        (xAbsoluteStart, xAbsoluteEnd, yAbsoluteStart, yAbsoluteEnd) with 
+        (0, 0, 1) equals (-2, 2, -2, 2)"""
+        xAbsoluteStart = center_x - 2/zoom
+        xAbsoluteEnd = center_x + 2/zoom
+        yAbsoluteStart = center_y - 2/zoom
+        yAbsoluteEnd = center_y + 2/zoom
+        return (xAbsoluteStart, xAbsoluteEnd, yAbsoluteStart, yAbsoluteEnd)
 
 
     def change_colorscheme(self,new_colorscheme):
