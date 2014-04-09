@@ -133,6 +133,9 @@
 #color_pickers{	
     display:none;
     }
+#change_iteration{
+	display:none;
+}
 	    
 #first_color{
 	position:relative;

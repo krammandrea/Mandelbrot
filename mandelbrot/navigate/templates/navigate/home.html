@@ -142,13 +142,13 @@
 </div>
 
 <!--progress bar and greying out effect-->
-<progress   
+<!-- <progress   
     id="progress_bar"
     value="22"
     max="100"
     text="Calculating new image">
     Progress: 22% done.
-    </progress>
+    </progress> -->
 
 
 <!--customize box-->
@@ -197,7 +197,6 @@
     </form>
     <!--change the colors-->
     <hr />
-    <br />
     <div    class="dropDownContent"
         onclick="javascript:MBMAINHELPERS.hideShowBlock(document.getElementById('color_pickers'))"
         title="show coloring options">
@@ -276,7 +275,7 @@
     </div>    
     <hr />
     <!--save button-->
-    <br />
+<!--     <br />
     <div>    
         <h3>
         save
@@ -289,15 +288,21 @@
     </div>
     <br/>
     <hr/>
-    <div>
+    <div> -->
+        <div    class="dropDownContent"
+        onclick="javascript:MBMAINHELPERS.hideShowBlock(document.getElementById('change_iteration'))"
+        title="show coloring options">
         <h3>
-        other
+            <span>pick the iterations </span>
+            <span> <img    src="{% static 'navigate/images/arrow_down.png'%}"
+                            class="dropDownArrow" /></span>
         </h3>
-        Iteration:
+        </div>
         <form   action="change_iteration"
             onsubmit="javascript:return MBMAINHELPERS.validateIterationInput(document.getElementById('change_iteration'))"
             id="change_iteration"
             method=get>
+        Iterations:
         <input  id="iteration"
             class="button inputfield"
             type="text"
