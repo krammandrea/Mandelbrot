@@ -1,4 +1,5 @@
-import math, Image, ImageDraw, ImageFilter
+import math
+from PIL import Image, ImageDraw, ImageFilter
 # import testing
 #TODO possible separation of saving and calculating the image, formatting input variables, adjust variablenames, how everything works together
 
