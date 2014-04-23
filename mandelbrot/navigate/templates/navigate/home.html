@@ -11,134 +11,112 @@
 </head>
 
 <body>
-    <link rel="stylesheet" type="text/css" href="{% static 'navigate/main.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'navigate/main.css' %}" />
 
 <!-- Mandelbrot image and corresponding offset arrows-->
-    <div    id="der_nagel">
-    <div    id="layer_image">
-
-
+<div id="der_nagel">
+<div id="layer_image">
     <form method="post">
         <input type="image"    
             name="zoom_offset"
             src="{% static 'navigate/images/Mandelbrot.png'%}" 
             title='click for zoom' 
             alt='Mandelbrot' />
-<!-- use to avoid cross site request forgeries -->
-{% csrf_token %}
-</form>
+        <!-- use to avoid cross site request forgeries -->
+        {% csrf_token %}
+    </form>
+</div>
 
-
-<!--  
-        <form   action="zoom_offset" 
-
-        method="get">
-                <input 
-                type="image" 
-            name="zoom_offset"
-                src="{% static 'navigate/images/Mandelbrot.png'%}" 
-            title='click for zoom' 
-                alt='Mandelbrot' 
-            opacity='0.8'
-                border="0"
-            onsubmit="javascript:MBMAINHELPERS.calculatingImageEffect(document.getElementById('layer_image'),document.getElementById('progress_bar'))">
-                  </form>
-  -->   </div>
-
-    <div    id="layer_navigation">
-    <img
-        id="navigation_circle" 
+<div id="layer_navigation">
+    <img id="navigation_circle" 
         type="image"
         title="circle"
         alt="circle"
-            src="{% static 'navigate/images/circle.png'%}"
-            border="0"          
-            >
+        src="{% static 'navigate/images/circle.png'%}"
+        border="0">
 
-    <form   action="offset_right"
-        method=get>
-        <input
-        id="offset_right"
-        type="image"
-        name="offset_right"
-        title="move right"
-        alt="move graphic to the right"
-        src="{% static 'navigate/images/arrow_right.png'%}"
-        border="0"      
-        >
+    <form method="post">
+        <input id="offset_right"
+            name="offset_right"
+            type="image"
+            title="move right"
+            alt="move graphic to the right"
+            src="{% static 'navigate/images/arrow_right.png'%}"
+            border="0">
+        {% csrf_token %}
     </form>
 
-    <form  action="offset_left"
-        method=get>
-            <input
-        id="offset_left"
-                type="image"
-        name="offset_left"
-                title="move left"
-                alt="move graphic to the left"
-                src="{% static 'navigate/images/arrow_left.png'%}"
-                border="0"          
-            >
+    <form method="post">
+        <input id="offset_left"
+            type="image"
+            name="offset_left"
+            title="move left"
+            alt="move graphic to the left"
+            src="{% static 'navigate/images/arrow_left.png'%}"
+            border="0">
+        {% csrf_token %}
     </form>
     
 
-    <form   action="offset_down"
-            method=get>
-            <input
-        id="offset_down"
-                type="image"
-        name="offset_down"
-                title="move down"
-                alt="move graphic down"
-                src="{% static 'navigate/images/arrow_down.png'%}"
-                border="0"          
-            >
+    <form method="post">
+        <input
+            id="offset_down"
+            type="image"
+            name="offset_down"
+            title="move down"
+            alt="move graphic down"
+            src="{% static 'navigate/images/arrow_down.png'%}"
+            border="0">
+        {% csrf_token %}
     </form>
 
-     <form   action="offset_up"
-         method=get>
-    <input
-        id="offset_up"
-        type="image"
-        name="offset_up"
-        title="move up"
+    <form method="post">
+        <input id="offset_up"
+            type="image"
+            name="offset_up"
+            title="move up"
             alt="move graphic up"
-        src="{% static 'navigate/images/arrow_up.png'%}"
-            border="0"          
-        >
+            src="{% static 'navigate/images/arrow_up.png'%}"
+            border="0">
+        {% csrf_token %}
     </form>
 
     <!--slider and zoombuttons-->
     <div id="zoom_navigation">
-    <form   action="zoom"
-        method=get>
-        <input  id="zoom_slider"
+    <form method="post">
+        <input id="zoom_slider"
             type="range"
             name="z"
             title="zoom"
             alt="choose the zoomfactor"
             min="0"
-            max="100"
-            value="50"
-            step="10"
+            max="10"
+            value="5"
+            step="1"
             onMouseUp="submit()"/>
-
+        {% csrf_token %}
     </form>
 
-    <button id="zoom_in"
-        onClick="window.location='/zoom_in'"
-        value=""
-        class="button add_button">
+    <form method="post">        
+        <input id="zoom_in"
+            type="submit"
+            name="zoom_in"
+            value=""
+            class="button add_button">
+        {% csrf_token %}
+    </form>
+
+    <form method="post">        
+        <input id="zoom_out"
+            type="submit"
+            name="zoom_out"
+            value=""
+            class="button minus_button">            
+        {% csrf_token %}
+    </form>
     
-    </button>
-    <button id="zoom_out"
-        onClick="window.location='/zoom_out'"
-        value=""
-        class="button minus_button">            
-    
-    </button>
-    </div>
-    </div>
+</div>
+</div>
 </div>
 
 <!--progress bar and greying out effect-->
@@ -167,13 +145,12 @@
         </span>
     </h3>
     </div>
-    <form   action="change_size"
+    <form method="post" 
+        id="change_size"
         name="change_size"
-        onSubmit="javascript:return MBMAINHELPERS.validateSizeInput(document.getElementById('change_size'))"
-        method="get"
-        id="change_size">
+        onSubmit="javascript:return MBMAINHELPERS.validateSizeInput(document.getElementById('change_size'))">
         Size:
-        <input  id="imagewidth"
+        <input id="imagewidth"
             class="button inputfield"
             type="text"
             name="pxwidth"
@@ -194,6 +171,7 @@
             class="button text_button"
             type="submit"
             value="change size">
+        {% csrf_token %}
     </form>
     <!--change the colors-->
     <hr />
@@ -212,10 +190,9 @@
     </h3>
     </div>
     <div    id="color_pickers">
-    <form   action="/change_color"
+    <form method="post" 
         id="color_pickers_form"
-        onSubmit="javascript: return MBMAINHELPERS.validateColorInput(document.getElementById('color_pickers_form'))"
-        method=get>
+        onSubmit="javascript: return MBMAINHELPERS.validateColorInput(document.getElementById('color_pickers_form'))">
 
         <button  onclick="javascript:MBMAINHELPERS.resetColors()" 
             class="button text_button"
@@ -271,6 +248,7 @@
         </div>
         </div>
         </br> <!--needed as last child node-->
+        {% csrf_token %}
     </form>    
     </div>    
     <hr />
@@ -298,17 +276,17 @@
                             class="dropDownArrow" /></span>
         </h3>
         </div>
-        <form   action="change_iteration"
+        <form  method="post"
             onsubmit="javascript:return MBMAINHELPERS.validateIterationInput(document.getElementById('change_iteration'))"
-            id="change_iteration"
-            method=get>
-        Iterations:
-        <input  id="iteration"
-            class="button inputfield"
-            type="text"
-            name="iter"
-            alt="choose number of iterations"
-            size=2>
+            id="change_iteration">
+            Iterations:
+            <input  id="iteration"
+                class="button inputfield"
+                type="text"
+                name="iter"
+                alt="choose number of iterations"
+                size=2>
+            {% csrf_token %}
         </form>
     </div>
 <!--TODO label css for positioning, mako research, -->

@@ -17,7 +17,7 @@ class ImageAdministrator():
     in string form.
     """ 
 
-    def __init__(self, xCoord=-0.5, yCoord=0, zoom=1, xSize=400, ySize=400, iterations=6, colors=PURPLEGREEN):
+    def __init__(self, xCoord=-0.5, yCoord=0.0, zoom=1.0, xSize=400, ySize=400, iterations=10, colors=PURPLEGREEN):
 
         (self.xabsolutestart, self.xabsoluteend, self.yabsolutestart, self.yabsoluteend) = \
             self.convert_offset_and_zoom_to_start_end(xCoord, yCoord, zoom)
@@ -229,7 +229,7 @@ class ImageAdministrator():
 
     def change_zoom(self,zoom_relative):
         """
-        zoom into the picture with zoom=1 showing the orginal section and 
+        zoom into the picture with zoom=1 showing the original section and 
         zoom=2 half the section shown
         """
         #TODO catch out of bounds
@@ -244,13 +244,13 @@ class ImageAdministrator():
         self.yabsoluteend   -= 0.5*(oldimageheight-newimageheight)     
 
 
-    def change_offset(self, xoffsetfactor, yoffsetfactor):
+    def change_offset(self, xoffsetfactor=0, yoffsetfactor=0):
         """
         move the section of the image by the given percentage of the imagesize, 
         default is 20%, range is [0,1.0]
         """
-        xabsoluteoffset = xoffsetfactor*(self.xabsoluteend - self.xabsolutestart) 
-        yabsoluteoffset = yoffsetfactor*(self.yabsoluteend - self.yabsolutestart) 
+        xabsoluteoffset = xoffsetfactor*OFFSETFACTOR*(self.xabsoluteend - self.xabsolutestart) 
+        yabsoluteoffset = yoffsetfactor*OFFSETFACTOR*(self.yabsoluteend - self.yabsolutestart) 
 
         self.xabsolutestart += xabsoluteoffset
         self.yabsolutestart += yabsoluteoffset
@@ -290,6 +290,7 @@ class ImageAdministrator():
         change the colorscheme, minimum number of colors is 3
         """
         #TODO minimum number of colors
+        print "given scheme %s" %new_colorscheme
         self.colorscheme = new_colorscheme
         self.coloralg.initcolorscheme(self.colorscheme[1:len(self.colorscheme)])
         print "new colorscheme initiated "+str(self.colorscheme)

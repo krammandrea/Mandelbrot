@@ -15,15 +15,38 @@ def generatePage(request):
 def redirectUsing(request, currImage):
     """Redirect depending on the parsed post parameters"""
     print request.POST
+    if 'zoom_offset.x' in request.POST:
+        # TODO do a validity check 
+        currImage.change_offset_and_zoom(int(request.POST['zoom_offset.x']), int(request.POST['zoom_offset.y']))
+    elif 'offset_right.x' in request.POST:
+        currImage.change_offset(1,0)
+    elif 'offset_left.x' in request.POST:
+        currImage.change_offset(-1,0)
+    elif 'offset_up.x' in request.POST:
+        currImage.change_offset(0,-1)
+    elif 'offset_down.x' in request.POST:
+        currImage.change_offset(0,1)
+    elif 'z' in request.POST:
+        currImage.change_zoom(2**((int(request.POST['z'][0]))-5))
+    elif 'zoom_in' in request.POST:
+        currImage.change_zoom(2.0)
+    # TODO fix maximum zoomout
+    elif 'zoom_out' in request.POST:
+        currImage.change_zoom(0.5)
+    elif 'pxheight' in request.POST:
+        currImage.change_imagesize(int(request.POST['pxwidth']), int(request.POST['pxheight']))
+    elif 'iter' in request.POST:
+        currImage.change_maxiteration(int(request.POST['iter']))
+    elif 'col' in request.POST:
+        print dir(request.POST)
+        currImage.change_colorscheme(request.POST.getlist('col'))
+
+
+
     # TODO for each type of post
-    # offset_and_zoom
-    # zoom
-    # offset
     # change size
     # change colors
     # change iteration depth
-    # TODO do a validity check 
-    currImage.change_offset_and_zoom(int(request.POST['zoom_offset.x']), int(request.POST['zoom_offset.y']))
     return HttpResponseRedirect('/navigate/@%s,%s,z%s/%s/%s/i%s/c%s'%currImage.get_center())
 
 
@@ -35,7 +58,7 @@ def home(request):
     """Shows the default image as starting point"""
     currImage = imageAdministrator.ImageAdministrator()
     # TODO change to generic file path, production? 
-    currImage.calculate_mandelbrot('/Users/demo/Desktop/mandelbrot/Mandelbrot/mandelbrot/navigate/static/navigate/images/Mandelbrot.png')
+    currImage.calculate_mandelbrot('/Users/andreakramm/Pythonprojects/Mandelbrot/mandelbrot/navigate/static/navigate/images/Mandelbrot.png')
     if request.method == "POST":
         return redirectUsing(request, currImage)
     return generatePage(request)
@@ -54,6 +77,6 @@ def navigateTo(request, **imageParams):
             colors = valParams['colors'])
     if request.method == "POST":
         return redirectUsing(request, currImage)
-    currImage.calculate_mandelbrot('/Users/demo/Desktop/mandelbrot/Mandelbrot/mandelbrot/navigate/static/navigate/images/Mandelbrot.png')
+    currImage.calculate_mandelbrot('/Users/andreakramm/Pythonprojects/Mandelbrot/mandelbrot/navigate/static/navigate/images/Mandelbrot.png')
     return generatePage(request)
 
