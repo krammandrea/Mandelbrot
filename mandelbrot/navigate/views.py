@@ -4,19 +4,24 @@ from django.template import RequestContext, loader
 
 import imageAdministrator
 
+# Helper functions
+def generateImageAndPage(request, currImage):
+    """Calculate current Mandelbrot image and generate page"""
+    imageName = 'Mandelbrot_%s.png' %str(currImage.generate_hashSum()) 
+    # TODO change to generic file path, production? 
+    currImage.calculate_mandelbrot('/Users/andreakramm/Pythonprojects/Mandelbrot/mandelbrot/navigate/static/navigate/images/%s'%imageName)
+    templateParams = {'imageName': imageName}
+    return generatePage(request, templateParams)
+
 def generatePage(request, templateParams):
     """Generic template code"""
-    # a_list = Article.objects.filter(pub_date__year=year) 
-    # context = {'year': year, 'article_list': a_list}
     template = loader.get_template('navigate/home.html')
     context = RequestContext(request, templateParams)
     return HttpResponse(template.render(context))
 
 def redirectUsing(request, currImage):
     """Redirect depending on the parsed post parameters"""
-    print request.POST
     if 'zoom_offset.x' in request.POST:
-        # TODO do a validity check 
         currImage.change_offset_and_zoom(int(request.POST['zoom_offset.x']), int(request.POST['zoom_offset.y']))
     elif 'offset_right.x' in request.POST:
         currImage.change_offset(1,0)
@@ -41,12 +46,6 @@ def redirectUsing(request, currImage):
         print dir(request.POST)
         currImage.change_colorscheme(request.POST.getlist('col'))
 
-
-
-    # TODO for each type of post
-    # change size
-    # change colors
-    # change iteration depth
     return HttpResponseRedirect('/navigate/@%s,%s,z%s/%s/%s/i%s/c%s'%currImage.get_center())
 
 
@@ -57,13 +56,9 @@ def index(request):
 def home(request):
     """Shows the default image as starting point"""
     currImage = imageAdministrator.ImageAdministrator()
-    # TODO change to generic file path, production? 
-    currImage.calculate_mandelbrot('/Users/andreakramm/Pythonprojects/Mandelbrot/mandelbrot/navigate/static/navigate/images/Mandelbrot_%s.png' %currImage.generate_hashSum())
     if request.method == "POST":
         return redirectUsing(request, currImage)
-    imageName = 'Mandelbrot_%s.png' %str(currImage.generate_hashSum()) 
-    templateParams = {'imageName': imageName}
-    return generatePage(request, templateParams)
+    return generateImageAndPage(request, currImage)
 
 def navigateTo(request, **imageParams):
     """Take the starting point parameters from the url, validate and parse them, change them
@@ -79,8 +74,5 @@ def navigateTo(request, **imageParams):
             colors = valParams['colors'])
     if request.method == "POST":
         return redirectUsing(request, currImage)
-    currImage.calculate_mandelbrot('/Users/andreakramm/Pythonprojects/Mandelbrot/mandelbrot/navigate/static/navigate/images/Mandelbrot_%s.png'%currImage.generate_hashSum())
-    imageName = 'Mandelbrot_%s.png' %str(currImage.generate_hashSum()) 
-    templateParams = {'imageName': imageName}
-    return generatePage(request, templateParams)
+    return generateImageAndPage(request, currImage)
 

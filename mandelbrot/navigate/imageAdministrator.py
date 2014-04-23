@@ -113,9 +113,11 @@ class ImageAdministrator():
         generates  8 base64-characters  hashvalue out of the 
         current borderlines and colors
         """ 
+        #BUG / character, other invalid characters? 
+        #TODO use comma separated values instead to make reverse readable
         #input string using the borderlines and colors
         accuBorderString =   str(self.xabsolutestart)+str(self.xabsoluteend)+str(self.yabsolutestart)+str(self.yabsoluteend)+str(self.maxiteration)+str(self.height)+str(self.width)+str(self.colorscheme)
-        #random number to avoid multiplikation with 0
+        #random number to avoid multiplication with 0
         hashSum = 7
         #convert to binaries, shake it a lot  and shorten to 48bit
         for char in accuBorderString:
