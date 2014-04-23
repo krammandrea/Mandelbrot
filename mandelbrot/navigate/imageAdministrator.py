@@ -113,7 +113,6 @@ class ImageAdministrator():
         generates  8 base64-characters  hashvalue out of the 
         current borderlines and colors
         """ 
-        #BUG / character, other invalid characters? 
         #TODO use comma separated values instead to make reverse readable
         #input string using the borderlines and colors
         accuBorderString =   str(self.xabsolutestart)+str(self.xabsoluteend)+str(self.yabsolutestart)+str(self.yabsoluteend)+str(self.maxiteration)+str(self.height)+str(self.width)+str(self.colorscheme)
@@ -125,7 +124,7 @@ class ImageAdministrator():
         #convert to 6 ascii-characters (6x8bit=48bit) 
         hashSumAsString = chr((hashSum&0xff0000000000)>>40)+chr((hashSum&0x00ff00000000)>>32)+chr((hashSum&0x0000ff000000)>>24)+chr((hashSum&0x000000ff0000)>>16)+chr((hashSum&0x00000000ff00)>>8)+chr((hashSum&0x0000000000ff))
         #convert to 8 base64-characters (8x6bit=48bit)
-        return base64.b64encode(hashSumAsString)    
+        return base64.b64encode(hashSumAsString, ['+', '='])    
 
     @classmethod
     def validate_and_parse_all_params(cls, imageParams):
