@@ -19,7 +19,7 @@
     <form method="post">
         <input type="image"    
             name="zoom_offset"
-            src="{% static 'navigate/images/Mandelbrot.png'%}" 
+            src="{% static 'navigate/images/'|add:imageName %}" 
             title='click for zoom' 
             alt='Mandelbrot' />
         <!-- use to avoid cross site request forgeries -->

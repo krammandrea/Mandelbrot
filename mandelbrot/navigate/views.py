@@ -4,12 +4,12 @@ from django.template import RequestContext, loader
 
 import imageAdministrator
 
-def generatePage(request):
+def generatePage(request, templateParams):
     """Generic template code"""
     # a_list = Article.objects.filter(pub_date__year=year) 
     # context = {'year': year, 'article_list': a_list}
     template = loader.get_template('navigate/home.html')
-    context = RequestContext(request, {})
+    context = RequestContext(request, templateParams)
     return HttpResponse(template.render(context))
 
 def redirectUsing(request, currImage):
@@ -58,10 +58,12 @@ def home(request):
     """Shows the default image as starting point"""
     currImage = imageAdministrator.ImageAdministrator()
     # TODO change to generic file path, production? 
-    currImage.calculate_mandelbrot('/Users/andreakramm/Pythonprojects/Mandelbrot/mandelbrot/navigate/static/navigate/images/Mandelbrot.png')
+    currImage.calculate_mandelbrot('/Users/andreakramm/Pythonprojects/Mandelbrot/mandelbrot/navigate/static/navigate/images/Mandelbrot_%s.png' %currImage.generate_hashSum())
     if request.method == "POST":
         return redirectUsing(request, currImage)
-    return generatePage(request)
+    imageName = 'Mandelbrot_%s.png' %str(currImage.generate_hashSum()) 
+    templateParams = {'imageName': imageName}
+    return generatePage(request, templateParams)
 
 def navigateTo(request, **imageParams):
     """Take the starting point parameters from the url, validate and parse them, change them
@@ -77,6 +79,8 @@ def navigateTo(request, **imageParams):
             colors = valParams['colors'])
     if request.method == "POST":
         return redirectUsing(request, currImage)
-    currImage.calculate_mandelbrot('/Users/andreakramm/Pythonprojects/Mandelbrot/mandelbrot/navigate/static/navigate/images/Mandelbrot.png')
-    return generatePage(request)
+    currImage.calculate_mandelbrot('/Users/andreakramm/Pythonprojects/Mandelbrot/mandelbrot/navigate/static/navigate/images/Mandelbrot_%s.png'%currImage.generate_hashSum())
+    imageName = 'Mandelbrot_%s.png' %str(currImage.generate_hashSum()) 
+    templateParams = {'imageName': imageName}
+    return generatePage(request, templateParams)
 

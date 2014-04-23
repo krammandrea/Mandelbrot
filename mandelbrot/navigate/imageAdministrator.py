@@ -1,6 +1,7 @@
 import math,re
 import algorithm, coloralg
 import xml.etree.cElementTree as ET
+import base64
 
 PURPLEGREEN = ["55285E","4B2B52","451A4E","7B4686","7C4E86","A1A95F","A0A956","6B7326","747A3E","838C3D"]
 GREEN =["000000","336633","33664D","336666","334D66","333366","4D3366","663366","66334D","663333","664D33","666633","4D6633"]
@@ -113,14 +114,14 @@ class ImageAdministrator():
         current borderlines and colors
         """ 
         #input string using the borderlines and colors
-        accuBorderString =   str(self.xabsolutestart)+str(self.xabsoluteend)+str(self.yabsolutestart)+str(self.yabsoluteend)+str(self.colorscheme)
+        accuBorderString =   str(self.xabsolutestart)+str(self.xabsoluteend)+str(self.yabsolutestart)+str(self.yabsoluteend)+str(self.maxiteration)+str(self.height)+str(self.width)+str(self.colorscheme)
         #random number to avoid multiplikation with 0
         hashSum = 7
         #convert to binaries, shake it a lot  and shorten to 48bit
         for char in accuBorderString:
-            hashSum = ((ord(char)+17)*checksum)%0xffffffffffff
+            hashSum = ((ord(char)+17)*hashSum)%0xffffffffffff
         #convert to 6 ascii-characters (6x8bit=48bit) 
-        hashSumAsString = chr((hashSum&0xff0000000000)>>40)+chr((checksum&0x00ff00000000)>>32)+chr((checksum&0x0000ff000000)>>24)+chr((checksum&0x000000ff0000)>>16)+chr((checksum&0x00000000ff00)>>8)+chr((checksum&0x0000000000ff))
+        hashSumAsString = chr((hashSum&0xff0000000000)>>40)+chr((hashSum&0x00ff00000000)>>32)+chr((hashSum&0x0000ff000000)>>24)+chr((hashSum&0x000000ff0000)>>16)+chr((hashSum&0x00000000ff00)>>8)+chr((hashSum&0x0000000000ff))
         #convert to 8 base64-characters (8x6bit=48bit)
         return base64.b64encode(hashSumAsString)    
 
@@ -206,11 +207,6 @@ class ImageAdministrator():
         self.yabsoluteend   += 0.5*height_difference
         self.height = new_height
         self.width  = new_width
-#TODO
-
-    def reset_to_default(self):
-        pass
-
 
     def change_section(self,new_borderlines):
         """
