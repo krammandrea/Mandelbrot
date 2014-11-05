@@ -1,0 +1,1 @@
+web: gunicorn mandelbrot.wsgi --log-file -
