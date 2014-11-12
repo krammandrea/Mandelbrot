@@ -9,7 +9,7 @@ def generateImageAndPage(request, currImage):
     """Calculate current Mandelbrot image and generate page"""
     imageName = 'Mandelbrot_%s.png' %str(currImage.generate_hashSum()) 
     # TODO change to generic file path, production? 
-    currImage.calculate_mandelbrot('/Users/andreakramm/Pythonprojects/Mandelbrot/navigate/static/navigate/images/%s'%imageName)
+    currImage.calculate_mandelbrot('navigate/static/navigate/images/%s'%imageName)
     templateParams = {'imageName': imageName}
     return generatePage(request, templateParams)
 
